@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import planix from "@/assets/planix.jpeg";
 import opinion from "@/assets/opinion.jpg";
 import skysync from "@/assets/skysync.jpg";
+import saasPulse from "@/assets/saasPulse.jpg";
+import finance_dashboard from "@/assets/finance_dashboard.png";
 import dashboard_olist from "@/assets/dashboard_olist.jpeg";
 
 interface Project {
@@ -74,7 +76,7 @@ const Projects = () => {
       title: "SaaS Pulse",
       description: "Sistema de Business Intelligence focado no monitoramento de métricas vitais de saúde financeira para plataformas SaaS, como MRR e Churn.",
       fullDescription: "O projeto transforma logs brutos de eventos em inteligência estratégica, permitindo que gestores visualizem o crescimento e a retenção de clientes em tempo real.\n • Simulação estatística de eventos de clientes (assinaturas, upgrades e cancelamentos) usando Faker.\n • Motor de métricas automatizado para cálculo de MRR (Receita Recorrente Mensal) e Ticket Médio.\n • Análise detalhada de Churn Rate para identificação de gargalos na retenção.\n • Dashboard interativo com filtros dinâmicos de período e KPIs de performance.\n • Visualização de tendências históricas com gráficos de linha e barras para suporte à decisão.",
-      image: '',
+      image: saasPulse,
       technologies: [
         "Python",
         "Pandas",
@@ -98,7 +100,7 @@ const Projects = () => {
         \n • **Módulo de Sistema em Go (Golang):** Implementação de um microserviço em Go para consultas rápidas ao banco e busca do valor mais recente, demonstrando proficiência em linguagens de sistema. \n \
         \n • **Análise de Anomalias:** Lógica de negócio em Python que calcula a Média Móvel dos últimos 7 dias e dispara alertas se a cotação ultrapassar um threshold de variação. \n \
         \n • **Dashboard Interativo (Plotly Dash):** Construção de um *frontend* web puramente em Python, conectado ao PostgreSQL, para visualização em tempo real da série temporal histórica.",
-      image: 'finance-dashboard-image.png',
+      image: finance_dashboard,
       technologies: [
         "Python",
         "Go (Golang)",
