@@ -74,7 +74,7 @@ const Projects = () => {
       title: "SaaS Pulse",
       description: "Sistema de Business Intelligence focado no monitoramento de métricas vitais de saúde financeira para plataformas SaaS, como MRR e Churn.",
       fullDescription: "O projeto transforma logs brutos de eventos em inteligência estratégica, permitindo que gestores visualizem o crescimento e a retenção de clientes em tempo real.\n • Simulação estatística de eventos de clientes (assinaturas, upgrades e cancelamentos) usando Faker.\n • Motor de métricas automatizado para cálculo de MRR (Receita Recorrente Mensal) e Ticket Médio.\n • Análise detalhada de Churn Rate para identificação de gargalos na retenção.\n • Dashboard interativo com filtros dinâmicos de período e KPIs de performance.\n • Visualização de tendências históricas com gráficos de linha e barras para suporte à decisão.",
-      image: saasPulse,
+      image: '',
       technologies: [
         "Python",
         "Pandas",
@@ -86,7 +86,7 @@ const Projects = () => {
         "Business Intelligence"
       ],
       githubUrl: "https://github.com/GabrielSantos777/Pulse_Monitor_de_Metricas_Criticas",
-      demoUrl: "",
+      demoUrl: "", 
       featured: true,
     },
     {
