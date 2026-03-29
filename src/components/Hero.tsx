@@ -5,32 +5,42 @@ import cvFile from "@/assets/Curriculo_Gabriel_Erick_Santos.pdf";
 
 const Hero = () => {
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center pt-16">
+    <section
+      id="hero"
+      className="min-h-screen flex items-center justify-center pt-16"
+    >
       <div className="section-container">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
           <div className="space-y-6 animate-fade-in">
             <div className="space-y-2">
-              <p className="text-primary font-mono text-sm md:text-base">Olá, eu sou</p>
-              <h1 className="text-5xl md:text-7xl font-bold">
-                Gabriel Santos
-              </h1>
+              <p className="text-primary font-mono text-sm md:text-base">
+                Olá, eu sou
+              </p>
+              <h1 className="text-5xl md:text-7xl font-bold">Gabriel Santos</h1>
               <p className="text-xl md:text-2xl text-muted-foreground">
                 Desenvolvedor Full Stack
               </p>
             </div>
-            
+
             <p className="text-lg text-muted-foreground max-w-xl">
-              Transformando ideias em código e dados em insights. 
-              Especializado em criar soluções web inovadoras e análises estratégicas.
+              Transformo ideias em soluções digitais e dados em insights
+              estratégicos. Atuo no desenvolvimento de aplicações e na
+              construção de análises orientadas a negócio, com foco em
+              performance, escalabilidade e geração de valor.
             </p>
 
             <div className="flex flex-wrap gap-4">
               <Button
                 asChild
                 size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold neon-glow">
-                <a href={cvFile} download="Curriculo_Gabriel_Santos.pdf" className="flex items-center gap-2">
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold neon-glow"
+              >
+                <a
+                  href={cvFile}
+                  download="Curriculo_Gabriel_Santos.pdf"
+                  className="flex items-center gap-2"
+                >
                   <Download size={20} />
                   Baixar CV
                 </a>
