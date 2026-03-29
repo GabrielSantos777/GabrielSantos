@@ -241,7 +241,7 @@ const Projects = () => {
                   <div>
                     <h4 className="font-semibold mb-2">Tecnologias:</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProject.technologies.map((tech: any) => (
+                      {selectedProject.technologies.map((tech) => (
                         <span
                           key={tech}
                           className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
