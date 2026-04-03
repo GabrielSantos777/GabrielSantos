@@ -1,7 +1,48 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { heroAvatar, heroStats, resumeFile, socialLinks } from "@/data/portfolio-data";
+import {
+  heroAvatar,
+  heroStats,
+  resumeFile,
+  socialLinks,
+} from "@/data/portfolio-data";
+
+const styles = {
+  section: "section-shell pb-16 pt-36",
+  layout:
+    "section-container grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_360px] xl:gap-20",
+  contentColumn: "space-y-8",
+  availabilityBadge:
+    "inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] text-primary",
+  availabilityDot: "size-2 animate-pulse rounded-full bg-primary",
+  headline:
+    "font-display text-[clamp(2.8rem,9vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]",
+  headlineAccent:
+    "block text-transparent [-webkit-text-stroke:1px_hsl(var(--primary)/0.5)]",
+  headlineHighlight: "block text-primary",
+  description: "max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg",
+  descriptionStrong: "font-medium text-foreground",
+  actionsRow: "flex flex-wrap gap-3",
+  primaryActionButton: "gap-2 bg-primary text-primary-foreground hover:bg-primary/90",
+  secondaryActionButton:
+    "gap-2 border-white/15 bg-white/5 text-muted-foreground hover:border-primary/35 hover:bg-primary/10 hover:text-primary",
+  socialRow: "flex items-center gap-4 pt-2",
+  socialLink:
+    "inline-flex size-10 items-center justify-center rounded-md border border-white/10 text-muted-foreground transition-all hover:border-primary/35 hover:bg-primary/10 hover:text-primary",
+  statsGrid:
+    "grid grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] sm:grid-cols-4",
+  statCard: "border border-white/5 px-5 py-4 text-center",
+  statLabel: "mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground",
+  avatarWrapper: "relative mx-auto w-full max-w-[340px]",
+  avatarRingContainer: "relative aspect-square",
+  avatarRingPrimary: "absolute inset-0 rounded-full border border-primary/30",
+  avatarRingSecondary:
+    "absolute -inset-4 animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-primary/20",
+  avatarRingTertiary:
+    "absolute -inset-8 animate-[spin_35s_linear_infinite_reverse] rounded-full border border-dashed border-primary/10",
+  avatarImage: "relative size-full rounded-full object-cover p-5 grayscale-[20%]",
+};
 
 type CountUpProps = {
   value: number;
@@ -21,7 +62,10 @@ const CountUpValue = ({ value, suffix, shouldStart }: CountUpProps) => {
     const animationStart = performance.now();
 
     const runAnimation = (timestamp: number) => {
-      const progress = Math.min((timestamp - animationStart) / durationInMilliseconds, 1);
+      const progress = Math.min(
+        (timestamp - animationStart) / durationInMilliseconds,
+        1,
+      );
       setCurrentValue(Math.round(progress * value));
 
       if (progress < 1) {
@@ -63,30 +107,31 @@ const Hero = () => {
   }, []);
 
   return (
-    <section id="hero" className="section-shell pb-16 pt-36">
-      <div className="section-container grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_360px] xl:gap-20">
-        <div className="space-y-8">
-          <p className="inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] text-primary">
-            <span className="size-2 animate-pulse rounded-full bg-primary" />
-            Disponivel para oportunidades
+    <section id="hero" className={styles.section}>
+      <div className={styles.layout}>
+        <div className={styles.contentColumn}>
+          <p className={styles.availabilityBadge}>
+            <span className={styles.availabilityDot} />
+            Disponível para oportunidades
           </p>
 
-          <h1 className="font-display text-[clamp(2.8rem,9vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">
+          <h1 className={styles.headline}>
             <span className="block">Full Stack</span>
-            <span className="block text-transparent [-webkit-text-stroke:1px_hsl(var(--primary)/0.5)]">
-              & Data
-            </span>
-            <span className="block text-primary">Analyst</span>
+            <span className={styles.headlineAccent}>& Data</span>
+            <span className={styles.headlineHighlight}>Engineer</span>
           </h1>
 
-          <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
-            Desenvolvo <strong className="font-medium text-foreground">produtos digitais orientados a dados</strong>{" "}
-            de aplicacoes web escalaveis a pipelines de analise e dashboards que transformam numeros em decisoes
-            estrategicas.
+          <p className={styles.description}>
+            Desenvolvo{" "}
+            <strong className={styles.descriptionStrong}>
+              sistemas orientados a dados
+            </strong>
+            : de aplicações web escaláveis a pipelines de análise e dashboards que
+            transformam números em decisões estratégicas.
           </p>
 
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+          <div className={styles.actionsRow}>
+            <Button asChild size="lg" className={styles.primaryActionButton}>
               <a href="#projects">
                 Ver projetos <ArrowRight size={16} />
               </a>
@@ -96,30 +141,35 @@ const Hero = () => {
               asChild
               variant="outline"
               size="lg"
-              className="gap-2 border-white/15 bg-white/5 text-muted-foreground hover:border-primary/35 hover:bg-primary/10 hover:text-primary"
+              className={styles.secondaryActionButton}
             >
-              <a href={resumeFile} download="Curriculo_Gabriel_Santos.pdf">
+              <a href={resumeFile} download="Currículo_Gabriel_Santos.pdf">
                 Baixar CV <Download size={16} />
               </a>
             </Button>
           </div>
 
-          <div className="flex items-center gap-4 pt-2">
+          <div className={styles.socialRow}>
             {socialLinks.map((socialLink) => {
               const iconByLabel = {
                 GitHub: Github,
                 LinkedIn: Linkedin,
                 Email: Mail,
               };
-              const Icon = iconByLabel[socialLink.label as keyof typeof iconByLabel];
+              const Icon =
+                iconByLabel[socialLink.label as keyof typeof iconByLabel];
 
               return (
                 <a
                   key={socialLink.label}
                   href={socialLink.href}
                   target={socialLink.href.startsWith("http") ? "_blank" : undefined}
-                  rel={socialLink.href.startsWith("http") ? "noreferrer noopener" : undefined}
-                  className="inline-flex size-10 items-center justify-center rounded-md border border-white/10 text-muted-foreground transition-all hover:border-primary/35 hover:bg-primary/10 hover:text-primary"
+                  rel={
+                    socialLink.href.startsWith("http")
+                      ? "noreferrer noopener"
+                      : undefined
+                  }
+                  className={styles.socialLink}
                   aria-label={socialLink.label}
                 >
                   <Icon size={17} />
@@ -128,41 +178,26 @@ const Hero = () => {
             })}
           </div>
 
-          <div
-            ref={statsRef}
-            className="grid grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]"
-          >
+          <div ref={statsRef} className={styles.statsGrid}>
             {heroStats.map((statItem) => (
-              <div key={statItem.label} className="border border-white/5 px-5 py-4 text-center">
-                <CountUpValue value={statItem.value} suffix={statItem.suffix} shouldStart={shouldAnimateStats} />
-                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{statItem.label}</p>
+              <div key={statItem.label} className={styles.statCard}>
+                <CountUpValue
+                  value={statItem.value}
+                  suffix={statItem.suffix}
+                  shouldStart={shouldAnimateStats}
+                />
+                <p className={styles.statLabel}>{statItem.label}</p>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="relative mx-auto w-full max-w-[340px]">
-          <div className="relative aspect-square">
-            <div className="absolute inset-0 rounded-full border border-primary/30" />
-            <div className="absolute -inset-4 animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-primary/20" />
-            <div className="absolute -inset-8 animate-[spin_35s_linear_infinite_reverse] rounded-full border border-dashed border-primary/10" />
-            <img
-              src={heroAvatar}
-              alt="Gabriel Santos"
-              className="relative size-full rounded-full object-cover p-5 grayscale-[20%]"
-            />
-          </div>
-
-          <div className="absolute -bottom-3 right-0 rounded-xl border border-primary/30 bg-card/95 px-4 py-3">
-            <div className="flex items-center gap-3">
-              <span className="size-2.5 animate-pulse rounded-full bg-primary" />
-              <div>
-                <p className="text-xs font-semibold text-foreground">Aberto a oportunidades</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
-                  CLT - PJ - Remoto
-                </p>
-              </div>
-            </div>
+        <div className={styles.avatarWrapper}>
+          <div className={styles.avatarRingContainer}>
+            <div className={styles.avatarRingPrimary} />
+            <div className={styles.avatarRingSecondary} />
+            <div className={styles.avatarRingTertiary} />
+            <img src={heroAvatar} alt="Gabriel Santos" className={styles.avatarImage} />
           </div>
         </div>
       </div>
@@ -171,4 +206,3 @@ const Hero = () => {
 };
 
 export default Hero;
-

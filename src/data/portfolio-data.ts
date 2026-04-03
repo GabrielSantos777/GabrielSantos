@@ -30,10 +30,10 @@ export type TimelineItem = {
   description: string;
 };
 
-export type SkillCategoryId = "frontend" | "backend" | "data" | "tools";
+export type SkillCategoryId = "all" | "frontend" | "backend" | "data" | "tools";
 
 export type Skill = {
-  icon: string;
+  iconImage: string;
   name: string;
   level: string;
   progress: number;
@@ -41,7 +41,7 @@ export type Skill = {
 };
 
 export type SkillCategory = {
-  id: SkillCategoryId;
+  id: Exclude<SkillCategoryId, "all">;
   label: string;
   skills: Skill[];
 };
@@ -100,7 +100,7 @@ export const heroAvatar = avatarImage;
 
 export const navSections: NavSection[] = [
   { label: "Sobre", href: "#about" },
-  { label: "Skills", href: "#skills" },
+  { label: "Habilidades", href: "#skills" },
   { label: "Projetos", href: "#projects" },
   { label: "Artigos", href: "#articles" },
   { label: "Contato", href: "#contact" },
@@ -108,7 +108,10 @@ export const navSections: NavSection[] = [
 
 export const socialLinks: SocialLink[] = [
   { label: "GitHub", href: "https://github.com/GabrielSantos777" },
-  { label: "LinkedIn", href: "https://www.linkedin.com/in/gabriel-santos-880200249" },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/gabriel-santos-880200249",
+  },
   { label: "Email", href: "mailto:gabrielsantos.erick@outlook.com" },
 ];
 
@@ -116,37 +119,37 @@ export const heroStats: HeroStat[] = [
   { label: "Projetos entregues", value: 6 },
   { label: "Tecnologias dominadas", value: 12 },
   { label: "Anos de idade", value: 22 },
-  { label: "Anos de experiencia", value: 2, suffix: "+" },
+  { label: "Anos de experiência", value: 2, suffix: "+" },
 ];
 
 export const aboutTimeline: TimelineItem[] = [
   {
     icon: "🎓",
     period: "2022 - Presente",
-    title: "Ciencias da Computacao",
+    title: "Ciências da Computação",
     description:
-      "Estudando algoritmos, estruturas de dados, sistemas distribuidos e engenharia de software.",
+      "Estudando algoritmos, estruturas de dados, sistemas distribuídos e engenharia de software.",
   },
   {
     icon: "💼",
     period: "2023 - Presente",
     title: "Desenvolvedor Full Stack",
     description:
-      "Desenvolvimento end-to-end de aplicacoes web com foco em performance e escalabilidade.",
+      "Desenvolvimento end-to-end de aplicações web com foco em performance e escalabilidade.",
   },
   {
     icon: "📊",
     period: "2024 - Presente",
     title: "Data & Analytics",
     description:
-      "Especializacao em analise de dados, BI, modelagem preditiva e visualizacao de dados.",
+      "Especialização em análise de dados, BI, modelagem preditiva e visualização de dados.",
   },
   {
     icon: "🤖",
-    period: "2025",
-    title: "IA & Automacao",
+    period: "2025 - Presente",
+    title: "IA & Automação",
     description:
-      "Explorando LLMs, RAG e automacao inteligente com n8n e LangChain.",
+      "Explorando LLMs, RAG e automação inteligente com n8n e LangChain.",
   },
 ];
 
@@ -155,48 +158,192 @@ export const skillCategories: SkillCategory[] = [
     id: "frontend",
     label: "Frontend",
     skills: [
-      { icon: "⚛️", name: "React", level: "Avancado", progress: 90, tag: "Frontend" },
-      { icon: "🎨", name: "HTML5 & CSS3", level: "Avancado", progress: 92, tag: "Frontend" },
-      { icon: "⚡", name: "JavaScript", level: "Avancado", progress: 88, tag: "Frontend" },
-      { icon: "🎯", name: "TypeScript", level: "Intermediario", progress: 70, tag: "Frontend" },
-      { icon: "🌊", name: "Tailwind CSS", level: "Avancado", progress: 85, tag: "Frontend" },
-      { icon: "🅱️", name: "Bootstrap", level: "Avancado", progress: 88, tag: "Frontend" },
+      {
+        iconImage: "/skills/react.svg",
+        name: "React",
+        level: "Avançado",
+        progress: 90,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/html-css.svg",
+        name: "HTML5 & CSS3",
+        level: "Avançado",
+        progress: 92,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/javascript.svg",
+        name: "JavaScript",
+        level: "Avançado",
+        progress: 88,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/typescript.svg",
+        name: "TypeScript",
+        level: "Intermediário",
+        progress: 70,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/tailwind.svg",
+        name: "Tailwind CSS",
+        level: "Avançado",
+        progress: 85,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/bootstrap.svg",
+        name: "Bootstrap",
+        level: "Avançado",
+        progress: 88,
+        tag: "Frontend",
+      },
     ],
   },
   {
     id: "backend",
     label: "Backend",
     skills: [
-      { icon: "🐍", name: "Python", level: "Avancado", progress: 85, tag: "Backend" },
-      { icon: "🐘", name: "PHP", level: "Avancado", progress: 80, tag: "Backend" },
-      { icon: "🟢", name: "Node.js", level: "Intermediario", progress: 72, tag: "Backend" },
-      { icon: "🗄️", name: "SQL", level: "Avancado", progress: 85, tag: "Backend" },
-      { icon: "🐘", name: "PostgreSQL", level: "Intermediario", progress: 75, tag: "Backend" },
-      { icon: "🔥", name: "Supabase", level: "Intermediario", progress: 70, tag: "Backend" },
+      {
+        iconImage: "/skills/python.svg",
+        name: "Python",
+        level: "Avançado",
+        progress: 85,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/php.svg",
+        name: "PHP",
+        level: "Avançado",
+        progress: 80,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/nodejs.svg",
+        name: "Node.js",
+        level: "Intermediário",
+        progress: 72,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/sql.svg",
+        name: "SQL",
+        level: "Avançado",
+        progress: 85,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/postgresql.svg",
+        name: "PostgreSQL",
+        level: "Intermediário",
+        progress: 75,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/supabase.svg",
+        name: "Supabase",
+        level: "Intermediário",
+        progress: 70,
+        tag: "Backend",
+      },
     ],
   },
   {
     id: "data",
     label: "Data & Analytics",
     skills: [
-      { icon: "📊", name: "Power BI", level: "Avancado", progress: 88, tag: "Data Analysis" },
-      { icon: "🐼", name: "Pandas", level: "Avancado", progress: 85, tag: "Data Analysis" },
-      { icon: "🔢", name: "NumPy", level: "Intermediario", progress: 78, tag: "Data Analysis" },
-      { icon: "📓", name: "Jupyter", level: "Avancado", progress: 88, tag: "Data Science" },
-      { icon: "📈", name: "Streamlit", level: "Intermediario", progress: 72, tag: "Data Apps" },
-      { icon: "📉", name: "Plotly", level: "Intermediario", progress: 75, tag: "Visualization" },
+      {
+        iconImage: "/skills/power-bi.svg",
+        name: "Power BI",
+        level: "Avançado",
+        progress: 88,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/pandas.svg",
+        name: "Pandas",
+        level: "Avançado",
+        progress: 85,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/numpy.svg",
+        name: "NumPy",
+        level: "Intermediário",
+        progress: 78,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/jupyter.svg",
+        name: "Jupyter",
+        level: "Avançado",
+        progress: 88,
+        tag: "Data Science",
+      },
+      {
+        iconImage: "/skills/streamlit.svg",
+        name: "Streamlit",
+        level: "Intermediário",
+        progress: 72,
+        tag: "Data Apps",
+      },
+      {
+        iconImage: "/skills/plotly.svg",
+        name: "Plotly",
+        level: "Intermediário",
+        progress: 75,
+        tag: "Visualization",
+      },
     ],
   },
   {
     id: "tools",
     label: "Ferramentas",
     skills: [
-      { icon: "🔧", name: "Git & GitHub", level: "Avancado", progress: 90, tag: "DevOps" },
-      { icon: "🤖", name: "n8n", level: "Intermediario", progress: 78, tag: "Automation" },
-      { icon: "🐳", name: "Docker", level: "Basico-Intermediario", progress: 55, tag: "DevOps" },
-      { icon: "🔍", name: "OCR & NLP", level: "Intermediario", progress: 65, tag: "AI Tools" },
-      { icon: "🌐", name: "REST APIs", level: "Avancado", progress: 88, tag: "Integration" },
-      { icon: "📦", name: "Vite / Webpack", level: "Intermediario", progress: 70, tag: "Tooling" },
+      {
+        iconImage: "/skills/git-github.svg",
+        name: "Git & GitHub",
+        level: "Avançado",
+        progress: 90,
+        tag: "DevOps",
+      },
+      {
+        iconImage: "/skills/n8n.svg",
+        name: "n8n",
+        level: "Intermediário",
+        progress: 78,
+        tag: "Automation",
+      },
+      {
+        iconImage: "/skills/docker.svg",
+        name: "Docker",
+        level: "Básico-Intermediário",
+        progress: 55,
+        tag: "DevOps",
+      },
+      {
+        iconImage: "/skills/ocr-nlp.svg",
+        name: "OCR & NLP",
+        level: "Intermediário",
+        progress: 65,
+        tag: "AI Tools",
+      },
+      {
+        iconImage: "/skills/rest-api.svg",
+        name: "REST APIs",
+        level: "Avançado",
+        progress: 88,
+        tag: "Integration",
+      },
+      {
+        iconImage: "/skills/vite-webpack.svg",
+        name: "Vite / Webpack",
+        level: "Intermediário",
+        progress: 70,
+        tag: "Tooling",
+      },
     ],
   },
 ];
@@ -205,32 +352,32 @@ export const projectFilters: ProjectFilter[] = [
   { id: "all", label: "Todos" },
   { id: "fullstack", label: "Full Stack" },
   { id: "data", label: "Data & BI" },
-  { id: "automation", label: "Automacao" },
+  { id: "automation", label: "Automação" },
 ];
 
 export const projects: PortfolioProject[] = [
   {
     id: "planix",
     title: "Planix",
-    subtitle: "// plataforma de gestao financeira",
+    subtitle: "// plataforma de gestão financeira",
     category: "Full Stack - Produto Web",
     emoji: "💰",
     description:
-      "Plataforma completa de gestao financeira pessoal e empresarial. Controle de despesas, relatorios automaticos, OCR de recibos e automacao com n8n.",
+      "Plataforma completa de gestão financeira pessoal e empresarial. Controle de despesas, relatórios automáticos, OCR de recibos e automação com n8n.",
     summary:
-      "Plataforma completa de gestao financeira pessoal e empresarial desenvolvida com React, TypeScript e Supabase.",
+      "Plataforma completa de gestão financeira pessoal e empresarial desenvolvida com React, TypeScript e Supabase.",
     metrics: [
-      { value: "98%", label: "Precisao OCR" },
+      { value: "98%", label: "Precisão OCR" },
       { value: "<1s", label: "Tempo de carga" },
       { value: "3x", label: "Produtividade" },
     ],
     features: [
-      "Dashboard financeiro em tempo real com graficos interativos.",
-      "OCR para captura automatica de despesas de recibos e notas fiscais.",
-      "Automacao de relatorios periodicos e notificacoes com n8n.",
-      "Controle de orcamentos por categoria com alertas de limite.",
-      "Exportacao de dados em PDF e CSV com filtros avancados.",
-      "Autenticacao segura com Row Level Security no Supabase.",
+      "Dashboard financeiro em tempo real com gráficos interativos.",
+      "OCR para captura automática de despesas de recibos e notas fiscais.",
+      "Automação de relatórios periódicos e notificações com n8n.",
+      "Controle de orçamentos por categoria com alertas de limite.",
+      "Exportação de dados em PDF e CSV com filtros avançados.",
+      "Autenticação segura com Row Level Security no Supabase.",
     ],
     tech: [
       "React",
@@ -255,25 +402,25 @@ export const projects: PortfolioProject[] = [
   {
     id: "olist",
     title: "Olist E-commerce Analytics",
-    subtitle: "// analise de 100k+ pedidos",
+    subtitle: "// análise de 100k+ pedidos",
     category: "Data Analytics - Business Intelligence",
     emoji: "📊",
     description:
-      "Business Intelligence aplicado ao dataset de 100k+ pedidos com analise preditiva, segmentacao RFM e dashboard executivo no Power BI.",
+      "Business Intelligence aplicado ao dataset de 100k+ pedidos com análise preditiva, segmentação RFM e dashboard executivo no Power BI.",
     summary:
-      "Projeto completo de Business Intelligence e Analise Preditiva no dataset publico do e-commerce Olist.",
+      "Projeto completo de Business Intelligence e análise preditiva no dataset público do e-commerce Olist.",
     metrics: [
       { value: "100k+", label: "Registros processados" },
       { value: "R$16M", label: "Receita analisada" },
       { value: "94k", label: "Clientes segmentados" },
     ],
     features: [
-      "Pipeline ETL com Python e Pandas para limpeza e transformacao de 9 datasets.",
-      "Analise RFM para segmentacao de 94 mil clientes.",
+      "Pipeline ETL com Python e Pandas para limpeza e transformação de 9 datasets.",
+      "Análise RFM para segmentação de 94 mil clientes.",
       "Feature engineering para modelagem preditiva de churn.",
-      "Dashboard executivo no Power BI com metricas financeiras e logisticas.",
-      "Analise de sentimentos de reviews com NLP.",
-      "Storytelling de dados com visualizacoes interativas.",
+      "Dashboard executivo no Power BI com métricas financeiras e logísticas.",
+      "Análise de sentimentos de reviews com NLP.",
+      "Storytelling de dados com visualizações interativas.",
     ],
     tech: [
       "Python",
@@ -282,93 +429,96 @@ export const projects: PortfolioProject[] = [
       "Jupyter Notebook",
       "Power BI",
       "DAX",
-      "Analise RFM",
+      "Análise RFM",
       "Feature Engineering",
       "Git",
       "Data Storytelling",
     ],
     filters: ["data"],
     isFeatured: true,
-    githubUrl: "https://github.com/GabrielSantos777/Analise_dados_ecommerce_Olist",
+    githubUrl:
+      "https://github.com/GabrielSantos777/Analise_dados_ecommerce_Olist",
     image: olistImage,
   },
   {
     id: "saas",
     title: "SaaS Pulse",
-    subtitle: "// inteligencia de negocio para SaaS",
+    subtitle: "// inteligência de negócio para SaaS",
     category: "Data & BI - Python",
     emoji: "📈",
     description:
-      "BI para monitoramento de MRR, churn e metricas de saude financeira para plataformas SaaS.",
+      "BI para monitoramento de MRR, churn e métricas de saúde financeira para plataformas SaaS.",
     summary:
-      "Sistema de Business Intelligence focado no monitoramento de metricas vitais para SaaS.",
+      "Sistema de Business Intelligence focado no monitoramento de métricas vitais para SaaS.",
     metrics: [
       { value: "MRR", label: "Monitoramento" },
-      { value: "Churn", label: "Analise detalhada" },
+      { value: "Churn", label: "Análise detalhada" },
       { value: "100%", label: "Automatizado" },
     ],
     features: [
-      "Simulacao de eventos de clientes com Faker.",
-      "Motor de metricas para MRR e ticket medio.",
-      "Analise detalhada de churn rate.",
-      "Dashboard interativo com filtros dinamicos.",
-      "Visualizacao de tendencias historicas.",
+      "Simulação de eventos de clientes com Faker.",
+      "Motor de métricas para MRR e ticket médio.",
+      "Análise detalhada de churn rate.",
+      "Dashboard interativo com filtros dinâmicos.",
+      "Visualização de tendências históricas.",
     ],
     tech: ["Python", "Pandas", "Streamlit", "Plotly", "Faker", "NumPy"],
     filters: ["data"],
     isFeatured: false,
-    githubUrl: "https://github.com/GabrielSantos777/Pulse_Monitor_de_Metricas_Criticas",
+    githubUrl:
+      "https://github.com/GabrielSantos777/Pulse_Monitor_de_Metricas_Criticas",
     image: saasPulseImage,
   },
   {
     id: "pipeline",
     title: "Pipeline Financeiro",
-    subtitle: "// engenharia de dados em producao",
+    subtitle: "// engenharia de dados em produção",
     category: "Data Engineering - Full Stack",
     emoji: "🔄",
     description:
-      "Engenharia de dados para coleta e monitoramento automatizado de series temporais USD/BRL.",
+      "Engenharia de dados para coleta e monitoramento automatizado de séries temporais USD/BRL.",
     summary:
-      "Solucao completa de engenharia de dados para coleta, armazenamento e monitoramento financeiro automatizado.",
+      "Solução completa de engenharia de dados para coleta, armazenamento e monitoramento financeiro automatizado.",
     metrics: [
       { value: "24/7", label: "Monitoramento" },
-      { value: "USD/BRL", label: "Serie temporal" },
+      { value: "USD/BRL", label: "Série temporal" },
       { value: "Auto", label: "Alertas" },
     ],
     features: [
-      "Coleta automatizada via API de cambio com agendamento cron.",
+      "Coleta automatizada via API de câmbio com agendamento cron.",
       "Armazenamento relacional com SQLAlchemy.",
       "Dashboard em tempo real com Plotly Dash.",
-      "Alertas por email para variacoes significativas.",
+      "Alertas por email para variações significativas.",
       "Logging detalhado e tratamento de erros para robustez.",
     ],
     tech: ["Python", "Plotly Dash", "Pandas", "SQLAlchemy", "REST API"],
     filters: ["data", "automation"],
     isFeatured: false,
-    githubUrl: "https://github.com/GabrielSantos777/FluxGuard_financeira_pipeline",
+    githubUrl:
+      "https://github.com/GabrielSantos777/FluxGuard_financeira_pipeline",
     image: pipelineImage,
   },
   {
     id: "opinion",
     title: "OpiniON",
-    subtitle: "// analise de sentimentos com NLP",
+    subtitle: "// análise de sentimentos com NLP",
     category: "NLP - Data Science",
     emoji: "💬",
     description:
-      "Analise e visualizacao de sentimentos de comentarios de produtos usando NLP.",
+      "Análise e visualização de sentimentos de comentários de produtos usando NLP.",
     summary:
-      "Projeto para coletar, analisar e visualizar comentarios de produtos com tecnicas de NLP.",
+      "Projeto para coletar, analisar e visualizar comentários de produtos com técnicas de NLP.",
     metrics: [
       { value: "NLP", label: "Processamento" },
       { value: "3", label: "Classes de sentimento" },
       { value: "Visual", label: "Dashboard" },
     ],
     features: [
-      "Coleta de comentarios via scraping e APIs.",
-      "Analise de sentimentos com VADER.",
-      "Visualizacao de distribuicao por sentimento.",
-      "Word cloud e analise de frequencia de termos.",
-      "Interface interativa para exploracao dos resultados.",
+      "Coleta de comentários via scraping e APIs.",
+      "Análise de sentimentos com VADER.",
+      "Visualização de distribuição por sentimento.",
+      "Word cloud e análise de frequência de termos.",
+      "Interface interativa para exploração dos resultados.",
     ],
     tech: ["Python", "VADER", "NLP", "Pandas", "Matplotlib", "Seaborn"],
     filters: ["data"],
@@ -383,20 +533,20 @@ export const projects: PortfolioProject[] = [
     category: "Full Stack - Web App",
     emoji: "🌤️",
     description:
-      "Aplicacao web que exibe condicoes climaticas de cidades no mundo inteiro em tempo real.",
+      "Aplicação web que exibe condições climáticas de cidades no mundo inteiro em tempo real.",
     summary:
-      "Aplicacao web que mostra temperatura, umidade, vento e previsao com API meteorologica.",
+      "Aplicação web que mostra temperatura, umidade, vento e previsão com API meteorológica.",
     metrics: [
-      { value: "196", label: "Paises suportados" },
+      { value: "196", label: "Países suportados" },
       { value: "Real-time", label: "Dados ao vivo" },
       { value: "Fast", label: "Resposta da API" },
     ],
     features: [
-      "Integracao com API de clima em tempo real.",
+      "Integração com API de clima em tempo real.",
       "Busca por nome de cidade.",
-      "Exibicao de temperatura, umidade e vento.",
+      "Exibição de temperatura, umidade e vento.",
       "Interface responsiva para desktop e mobile.",
-      "Historico de buscas e geolocalizacao.",
+      "Histórico de buscas e geolocalização.",
     ],
     tech: ["JavaScript", "HTML5", "CSS3", "REST API"],
     filters: ["fullstack"],
@@ -413,7 +563,7 @@ export const projects: PortfolioProject[] = [
     description:
       "Assistente inteligente com LangChain, embeddings e base de conhecimento personalizada.",
     summary:
-      "Em breve - assistente inteligente com recuperacao e geracao para consultas especializadas.",
+      "Em breve - assistente inteligente com recuperação e geração para consultas especializadas.",
     metrics: [],
     features: [],
     tech: ["LangChain", "OpenAI", "FastAPI"],
@@ -428,7 +578,7 @@ export const projects: PortfolioProject[] = [
     category: "Data Engineering",
     emoji: "🔧",
     description:
-      "Pipeline de dados com Airflow, dbt e BigQuery para analise de dados publicos.",
+      "Pipeline de dados com Airflow, dbt e BigQuery para análise de dados públicos.",
     summary:
       "Em breve - pipeline de engenharia de dados orientado a analytics.",
     metrics: [],
@@ -445,9 +595,10 @@ export const articles: Article[] = [
     id: "rfm",
     icon: "📊",
     category: "Data Analytics",
-    title: "Analise RFM: como segmentei 94 mil clientes e aumentei a assertividade do marketing",
+    title:
+      "Análise RFM: como segmentei 94 mil clientes e aumentei a assertividade do marketing",
     excerpt:
-      "Um walkthrough da analise RFM aplicada ao dataset da Olist, com codigo Python e visualizacoes no Power BI.",
+      "Um walkthrough da análise RFM aplicada ao dataset da Olist, com código Python e visualizações no Power BI.",
     readTime: "8 min de leitura",
     href: "#",
   },
@@ -455,19 +606,21 @@ export const articles: Article[] = [
     id: "planix-architecture",
     icon: "⚛️",
     category: "Full Stack",
-    title: "Arquitetando um app financeiro com React, Supabase e Edge Functions",
+    title:
+      "Arquitetando um app financeiro com React, Supabase e Edge Functions",
     excerpt:
-      "As decisoes de arquitetura por tras do Planix, do banco de dados ao frontend.",
+      "As decisões de arquitetura por trás do Planix, do banco de dados ao frontend.",
     readTime: "12 min de leitura",
     href: "#",
   },
   {
     id: "n8n",
     icon: "🤖",
-    category: "Automacao",
-    title: "Como automatizei meu workflow de dados com n8n e salvei 10h por semana",
+    category: "Automação",
+    title:
+      "Como automatizei meu workflow de dados com n8n e salvei 10h por semana",
     excerpt:
-      "Guia pratico para construir pipelines de automacao que processam e notificam em tempo real.",
+      "Guia prático para construir pipelines de automação que processam e notificam em tempo real.",
     readTime: "6 min de leitura",
     href: "#",
   },
@@ -475,9 +628,10 @@ export const articles: Article[] = [
     id: "power-bi",
     icon: "📈",
     category: "Business Intelligence",
-    title: "Power BI do zero ao avancado: DAX, modelagem e storytelling com dados",
+    title:
+      "Power BI do zero ao avançado: DAX, modelagem e storytelling com dados",
     excerpt:
-      "Aprendizados na construcao de dashboards de BI para e-commerce e metricas SaaS.",
+      "Aprendizados na construção de dashboards de BI para e-commerce e métricas SaaS.",
     readTime: "15 min de leitura",
     href: "#",
   },
@@ -485,9 +639,10 @@ export const articles: Article[] = [
     id: "pandas",
     icon: "🐍",
     category: "Python & Data",
-    title: "Pandas alem do basico: tecnicas avancadas para analise de grandes datasets",
+    title:
+      "Pandas além do básico: técnicas avançadas para análise de grandes datasets",
     excerpt:
-      "Chunk processing, otimizacao de memoria e operacoes vetorizadas em datasets de 100k+ registros.",
+      "Chunk processing, otimização de memória e operações vetorizadas em datasets de 100k+ registros.",
     readTime: "10 min de leitura",
     href: "#",
   },
@@ -497,7 +652,7 @@ export const articles: Article[] = [
     category: "Em breve",
     title: "Construindo um assistente RAG com LangChain e OpenAI do zero",
     excerpt:
-      "Um guia completo para criar sistemas de recuperacao e geracao com LLMs, embeddings e vector databases.",
+      "Um guia completo para criar sistemas de recuperação e geração com LLMs, embeddings e vector databases.",
     readTime: "Em escrita",
     isComingSoon: true,
   },

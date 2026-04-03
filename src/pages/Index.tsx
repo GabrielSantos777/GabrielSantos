@@ -7,9 +7,13 @@ import Articles from "@/components/Articles";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
+const styles = {
+  page: "min-h-screen",
+};
+
 const Index = () => {
   return (
-    <div id="top" className="min-h-screen">
+    <div id="top" className={styles.page}>
       <Header />
       <main>
         <Hero />
@@ -25,4 +29,3 @@ const Index = () => {
 };
 
 export default Index;
-

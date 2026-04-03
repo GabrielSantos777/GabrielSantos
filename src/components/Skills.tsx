@@ -1,12 +1,51 @@
 import { useEffect, useMemo, useState } from "react";
 import { SkillCategoryId, skillCategories } from "@/data/portfolio-data";
+import { cn } from "@/lib/utils";
+
+const styles = {
+  section: "section-shell border-t border-white/5",
+  tabList:
+    "mb-10 inline-flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5",
+  tabButtonBase:
+    "rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-all sm:text-sm",
+  tabButtonActive: "border border-primary/35 bg-card text-foreground",
+  tabButtonDefault: "text-muted-foreground hover:text-foreground",
+  skillGrid: "grid gap-3 sm:grid-cols-2 lg:grid-cols-3",
+  skillCard:
+    "group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-all hover:-translate-y-1 hover:border-primary/35",
+  skillIconWrap:
+    "mb-4 flex size-11 items-center justify-center rounded-lg bg-primary/10 p-2",
+  skillIconImage: "size-full object-contain",
+  skillTitle: "font-display text-lg font-bold text-foreground",
+  skillLevel: "mt-1 text-sm text-muted-foreground",
+  progressTrack: "mt-4 h-1.5 overflow-hidden rounded-full bg-white/10",
+  progressFill: "h-full rounded-full bg-primary transition-all duration-700 ease-out",
+  skillTag:
+    "mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-primary",
+};
 
 const Skills = () => {
-  const [activeCategoryId, setActiveCategoryId] = useState<SkillCategoryId>("frontend");
+  const [activeCategoryId, setActiveCategoryId] =
+    useState<SkillCategoryId>("frontend");
   const [shouldAnimateBars, setShouldAnimateBars] = useState(false);
 
-  const activeCategory = useMemo(
-    () => skillCategories.find((category) => category.id === activeCategoryId) ?? skillCategories[0],
+  const skillTabs = useMemo(
+    () => [
+      { id: "all" as SkillCategoryId, label: "Todos" },
+      ...skillCategories.map((category) => ({
+        id: category.id as SkillCategoryId,
+        label: category.label,
+      })),
+    ],
+    [],
+  );
+
+  const activeSkills = useMemo(
+    () =>
+      activeCategoryId === "all"
+        ? skillCategories.flatMap((category) => category.skills)
+        : (skillCategories.find((category) => category.id === activeCategoryId)
+            ?.skills ?? []),
     [activeCategoryId],
   );
 
@@ -18,55 +57,57 @@ const Skills = () => {
   }, [activeCategoryId]);
 
   return (
-    <section id="skills" className="section-shell border-t border-white/5">
+    <section id="skills" className={styles.section}>
       <div className="section-container">
         <span className="section-label">// habilidades</span>
-        <h2 className="section-title">Stack tecnica</h2>
+        <h2 className="section-title">Stack técnica</h2>
         <p className="section-description">
-          Ferramentas e tecnologias organizadas por area de atuacao e nivel de proficiencia.
+          Ferramentas e tecnologias organizadas por área de atuação e nível de
+          proficiência.
         </p>
 
-        <div className="mb-10 inline-flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5">
-          {skillCategories.map((category) => (
+        <div className={styles.tabList}>
+          {skillTabs.map((tab) => (
             <button
-              key={category.id}
+              key={tab.id}
               type="button"
-              onClick={() => setActiveCategoryId(category.id)}
-              className={`rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-all sm:text-sm ${
-                activeCategoryId === category.id
-                  ? "border border-primary/35 bg-card text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-              aria-pressed={activeCategoryId === category.id}
+              onClick={() => setActiveCategoryId(tab.id)}
+              className={cn(
+                styles.tabButtonBase,
+                activeCategoryId === tab.id
+                  ? styles.tabButtonActive
+                  : styles.tabButtonDefault,
+              )}
+              aria-pressed={activeCategoryId === tab.id}
             >
-              {category.label}
+              {tab.label}
             </button>
           ))}
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {activeCategory.skills.map((skill) => (
-            <article
-              key={skill.name}
-              className="group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-all hover:-translate-y-1 hover:border-primary/35"
-            >
-              <div className="mb-4 flex size-11 items-center justify-center rounded-lg bg-primary/10 text-2xl">
-                {skill.icon}
+        <div className={styles.skillGrid}>
+          {activeSkills.map((skill) => (
+            <article key={skill.name} className={styles.skillCard}>
+              <div className={styles.skillIconWrap}>
+                <img
+                  src={skill.iconImage}
+                  alt={`Ícone de ${skill.name}`}
+                  className={styles.skillIconImage}
+                  loading="lazy"
+                />
               </div>
 
-              <h3 className="font-display text-lg font-bold text-foreground">{skill.name}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{skill.level}</p>
+              <h3 className={styles.skillTitle}>{skill.name}</h3>
+              <p className={styles.skillLevel}>{skill.level}</p>
 
-              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+              <div className={styles.progressTrack}>
                 <div
-                  className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+                  className={styles.progressFill}
                   style={{ width: shouldAnimateBars ? `${skill.progress}%` : "0%" }}
                 />
               </div>
 
-              <span className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-primary">
-                {skill.tag}
-              </span>
+              <span className={styles.skillTag}>{skill.tag}</span>
             </article>
           ))}
         </div>
@@ -76,4 +117,3 @@ const Skills = () => {
 };
 
 export default Skills;
-
