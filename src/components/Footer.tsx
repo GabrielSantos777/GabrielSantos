@@ -1,43 +1,36 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { socialLinks } from "@/data/portfolio-data";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-card border-t border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-muted-foreground text-sm">
-            © {currentYear} Gabriel Santos — Todos os direitos reservados.
+    <footer className="border-t border-white/10 py-8">
+      <div className="section-container flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
+        <div>
+          <p className="font-display text-base font-bold text-primary">
+            &lt;Gabriel <span className="text-muted-foreground">Santos</span> /&gt;
           </p>
-          
-          <div className="flex gap-6">
-            <a
-              href="https://github.com/GabrielSantos777"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 transition-colors"
-              aria-label="GitHub"
-            >
-              <Github size={20} />
-            </a>
-            <a
-              href="https://www.linkedin.com/in/gabriel-santos-880200249"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:text-primary/80 transition-colors"
-              aria-label="LinkedIn"
-            >
-              <Linkedin size={20} />
-            </a>
-            <a
-              href="mailto:gabrielsantos.erick@outlook.com"
-              className="text-primary hover:text-primary/80 transition-colors"
-              aria-label="Email"
-            >
-              <Mail size={20} />
-            </a>
-          </div>
+          <p className="mt-1 text-sm text-muted-foreground">Feito com foco em performance e experiencia - {currentYear}</p>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <a href="#top" className="text-sm text-muted-foreground transition-colors hover:text-primary">
+            Topo
+          </a>
+
+          {socialLinks
+            .filter((socialLink) => socialLink.label !== "Email")
+            .map((socialLink) => (
+              <a
+                key={socialLink.label}
+                href={socialLink.href}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="text-sm text-muted-foreground transition-colors hover:text-primary"
+              >
+                {socialLink.label}
+              </a>
+            ))}
         </div>
       </div>
     </footer>
@@ -45,3 +38,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

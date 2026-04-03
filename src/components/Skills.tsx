@@ -1,46 +1,73 @@
-import { Code2, Database, BarChart3, GitBranch, Wrench, Workflow } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { SkillCategoryId, skillCategories } from "@/data/portfolio-data";
 
 const Skills = () => {
-  const skills = [
-    { name: "HTML5", icon: Code2, category: "Frontend" },
-    { name: "CSS3", icon: Code2, category: "Frontend" },
-    { name: "JavaScript", icon: Code2, category: "Frontend" },
-    { name: "React", icon: Code2, category: "Frontend" },
-    { name: "Bootstrap", icon: Code2, category: "Frontend" },
-    { name: "Node.js", icon: Code2, category: "Backend" },
-    { name: "PHP", icon: Code2, category: "Backend" },
-    { name: "Python", icon: Code2, category: "Backend" },
-    { name: "SQL", icon: Database, category: "Database" },
-    { name: "Power BI", icon: BarChart3, category: "Data Analysis" },
-    { name: "Git", icon: GitBranch, category: "Tools" },
-    { name: "n8n", icon: Workflow, category: "Automation" },
-  ];
+  const [activeCategoryId, setActiveCategoryId] = useState<SkillCategoryId>("frontend");
+  const [shouldAnimateBars, setShouldAnimateBars] = useState(false);
+
+  const activeCategory = useMemo(
+    () => skillCategories.find((category) => category.id === activeCategoryId) ?? skillCategories[0],
+    [activeCategoryId],
+  );
+
+  useEffect(() => {
+    setShouldAnimateBars(false);
+    const timeoutId = window.setTimeout(() => setShouldAnimateBars(true), 120);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [activeCategoryId]);
 
   return (
-    <section id="skills">
+    <section id="skills" className="section-shell border-t border-white/5">
       <div className="section-container">
-        <h2 className="section-title">Skills</h2>
-        
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-          {skills.map((skill, index) => (
-            <div
-              key={skill.name}
-              className="group bg-card border border-border rounded-lg p-6 text-center card-hover animate-fade-in hover:border-primary/50 transition-all duration-300"
-              style={{ animationDelay: `${index * 0.1}s` }}
+        <span className="section-label">// habilidades</span>
+        <h2 className="section-title">Stack tecnica</h2>
+        <p className="section-description">
+          Ferramentas e tecnologias organizadas por area de atuacao e nivel de proficiencia.
+        </p>
+
+        <div className="mb-10 inline-flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5">
+          {skillCategories.map((category) => (
+            <button
+              key={category.id}
+              type="button"
+              onClick={() => setActiveCategoryId(category.id)}
+              className={`rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-all sm:text-sm ${
+                activeCategoryId === category.id
+                  ? "border border-primary/35 bg-card text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              aria-pressed={activeCategoryId === category.id}
             >
-              <div className="flex flex-col items-center space-y-3">
-                <div className="p-4 bg-primary/10 rounded-full group-hover:bg-primary/20 transition-colors duration-300">
-                  <skill.icon className="w-8 h-8 text-primary" />
-                </div>
-                <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
-                  {skill.name}
-                </h3>
-                <span className="text-xs text-muted-foreground">{skill.category}</span>
+              {category.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {activeCategory.skills.map((skill) => (
+            <article
+              key={skill.name}
+              className="group rounded-xl border border-white/10 bg-white/[0.04] p-5 transition-all hover:-translate-y-1 hover:border-primary/35"
+            >
+              <div className="mb-4 flex size-11 items-center justify-center rounded-lg bg-primary/10 text-2xl">
+                {skill.icon}
               </div>
-              
-              {/* Neon glow effect on hover */}
-              <div className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none neon-glow"></div>
-            </div>
+
+              <h3 className="font-display text-lg font-bold text-foreground">{skill.name}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{skill.level}</p>
+
+              <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div
+                  className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+                  style={{ width: shouldAnimateBars ? `${skill.progress}%` : "0%" }}
+                />
+              </div>
+
+              <span className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.12em] text-primary">
+                {skill.tag}
+              </span>
+            </article>
           ))}
         </div>
       </div>
@@ -49,3 +76,4 @@ const Skills = () => {
 };
 
 export default Skills;
+

@@ -1,85 +1,77 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
+import { navSections } from "@/data/portfolio-data";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll);
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
-    { label: "Sobre Mim", href: "#about" },
-    { label: "Habilidades", href: "#skills" },
-    { label: "Projetos", href: "#projects" },
-    { label: "Contato", href: "#contact" },
-  ];
-
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-card/80 backdrop-blur-lg shadow-lg" : "bg-transparent"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "border-b border-white/10 bg-background/85 py-3 backdrop-blur-xl"
+          : "bg-transparent py-5"
       }`}
     >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <a
-            href="#hero"
-            className="text-2xl font-bold neon-text hover:opacity-80 transition-opacity"
-          >
-            &lt;Gabriel Santos /&gt;
-          </a>
+      <nav className="section-container flex items-center justify-between">
+        <a href="#top" className="font-display text-lg font-bold text-primary sm:text-xl">
+          &lt;GS<span className="text-muted-foreground">/&gt;</span>
+        </a>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
+        <ul className="hidden items-center gap-9 md:flex">
+          {navSections.map((section) => (
+            <li key={section.href}>
               <a
-                key={item.href}
-                href={item.href}
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+                href={section.href}
+                className={`font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-foreground ${
+                  section.href === "#contact"
+                    ? "rounded-md border border-primary/40 px-4 py-2 text-primary hover:bg-primary/10"
+                    : ""
+                }`}
               >
-                {item.label}
+                {section.label}
               </a>
-            ))}
-            <ThemeToggle />
-          </div>
+            </li>
+          ))}
+        </ul>
 
-          {/* Mobile Menu Button & Theme Toggle */}
-          <div className="md:hidden flex items-center gap-3">
-            <ThemeToggle />
-            <button
-              className="text-foreground hover:text-primary transition-colors"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 space-y-3 animate-fade-in">
-            {navItems.map((item) => (
-              <a
-                key={item.href}
-                href={item.href}
-                className="block text-foreground hover:text-primary transition-colors duration-200 font-medium py-2"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-        )}
+        <button
+          type="button"
+          className="rounded-md border border-white/10 p-2 text-muted-foreground transition-colors hover:text-foreground md:hidden"
+          onClick={() => setIsMobileMenuOpen((previousState) => !previousState)}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-nav"
+          aria-label="Abrir menu de navegacao"
+        >
+          {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </nav>
+
+      {isMobileMenuOpen ? (
+        <div
+          id="mobile-nav"
+          className="section-container mt-2 space-y-2 rounded-xl border border-white/10 bg-black/80 p-4 md:hidden"
+        >
+          {navSections.map((section) => (
+            <a
+              key={section.href}
+              href={section.href}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="block rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+            >
+              {section.label}
+            </a>
+          ))}
+        </div>
+      ) : null}
     </header>
   );
 };

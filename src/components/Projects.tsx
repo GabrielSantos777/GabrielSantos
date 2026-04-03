@@ -1,285 +1,274 @@
-import { useState } from "react";
-import { ExternalLink, Github } from "lucide-react";
+import { useMemo, useState } from "react";
+import { ArrowUpRight, ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import planix from "@/assets/planix.jpeg";
-import opinion from "@/assets/opinion.jpg";
-import skysync from "@/assets/skysync.jpg";
-import saasPulse from "@/assets/saasPulse.jpg";
-import finance_dashboard from "@/assets/finance_dashboard.png";
-import dashboard_olist from "@/assets/dashboard_olist.jpeg";
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  fullDescription: string;
-  image: string;
-  technologies: string[];
-  githubUrl?: string;
-  demoUrl?: string;
-  featured: boolean;
-}
+import {
+  PortfolioProject,
+  ProjectFilterId,
+  projectFilters,
+  projects,
+} from "@/data/portfolio-data";
 
 const Projects = () => {
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [activeFilterId, setActiveFilterId] = useState<ProjectFilterId>("all");
+  const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
 
-  const projects: Project[] = [
-    {
-      id: "planix",
-      title: "Planix",
-      description: "Plataforma completa de gestão financeira pessoal e empresarial que permite aos usuários controlar suas finanças de forma inteligente e automatizada.",
-      fullDescription: "O sistema oferece controle detalhado de despesas, receitas, investimentos e cartões de crédito, com relatórios avançados e integração com WhatsApp para registro rápido de transações.\n • Controle de múltiplas contas bancárias (corrente, poupança, investimentos).\n • Sistema de metas financeiras. \n • Dashboard interativo com gráficos em tempo real. \n • Bot inteligente para consultas rápidas e Registro de despesas e receitas por mensagem. \n • Automação via n8nBot inteligente para consultas rápida. \n Acesse: https://planix.space/landing",
-      image: planix,
-      technologies: [
-        "React",
-        "TypeScript",
-        "Vite",
-        "Tailwind CSS",
-        "shadcn/ui",
-        "Recharts",
-        "React Query",
-        "Supabase",
-        "PostgreSQL",
-        "Edge Functions",
-        "n8n",
-        "OCR"
-      ],
-      githubUrl: "https://github.com/GabrielSantos777/planix",
-      demoUrl: "https://planix.space/landing",
-      featured: true,
-    },
-    {
-      id: "olist-sales-analysis",
-      title: "Olist E-commerce Analytics",
-      description: "Projeto completo de Business Intelligence (BI) e Análise Preditiva aplicado ao dataset de vendas do E-commerce Olist, focado em otimização logística e segmentação de clientes.",
-      fullDescription: "O sistema transformou nove arquivos brutos de transação em insights acionáveis, culminando em um Dashboard interativo. A análise incluiu o ciclo completo de ETL, Feature Engineering e modelagem estratégica.\n • Segmentação RFM: Identificação e classificação de clientes de alto valor (VIPs) e clientes em risco (Churn Risk).\n • Análise de Tendência: Visualização da sazonalidade de vendas e identificação dos picos de Q4 (Black Friday).\n • Performance Logística: Cálculo do Tempo de Entrega Real vs. Estimado para otimizar a operação.\n • KPIs Robustos: Criação de medidas DAX ultra-seguras (usando SUMX) para garantir a precisão de KPIs como Receita Total (corrigida de R$ 16,4 Milhões) e Ticket Médio, resolvendo problemas complexos de duplicação de dados.\n • ETL e Limpeza de Dados: Consolidação e tratamento de 97.500 pedidos únicos com Python/Pandas.",
-      image: dashboard_olist,
-      technologies: [
-        "Python",
-        "Pandas",
-        "NumPy",
-        "Jupyter Notebook",
-        "Power BI",
-        "DAX (Data Analysis Expressions)",
-        "Análise RFM (Recência, Frequência, Valor Monetário)",
-        "Feature Engineering",
-        "Git",
-        "Data Storytelling"
-      ],
-      githubUrl: "https://github.com/GabrielSantos777/Analise_dados_ecommerce_Olist",
-      demoUrl: "",
-      featured: true,
-    },
-    {
-      id: "saas-pulse",
-      title: "SaaS Pulse",
-      description: "Sistema de Business Intelligence focado no monitoramento de métricas vitais de saúde financeira para plataformas SaaS, como MRR e Churn.",
-      fullDescription: "O projeto transforma logs brutos de eventos em inteligência estratégica, permitindo que gestores visualizem o crescimento e a retenção de clientes em tempo real.\n • Simulação estatística de eventos de clientes (assinaturas, upgrades e cancelamentos) usando Faker.\n • Motor de métricas automatizado para cálculo de MRR (Receita Recorrente Mensal) e Ticket Médio.\n • Análise detalhada de Churn Rate para identificação de gargalos na retenção.\n • Dashboard interativo com filtros dinâmicos de período e KPIs de performance.\n • Visualização de tendências históricas com gráficos de linha e barras para suporte à decisão.",
-      image: saasPulse,
-      technologies: [
-        "Python",
-        "Pandas",
-        "Streamlit",
-        "Plotly",
-        "Faker",
-        "NumPy",
-        "Data Analytics",
-        "Business Intelligence"
-      ],
-      githubUrl: "https://github.com/GabrielSantos777/Pulse_Monitor_de_Metricas_Criticas",
-      demoUrl: "", 
-      featured: true,
-    },
-    {
-      id: "financial-data-pipeline",
-      title: "Pipeline de Dados Full-Stack e Monitoramento Financeiro",
-      description: "Solução completa de Engenharia de Dados para coleta, armazenamento e monitoramento automatizado de séries temporais de cotação de moedas (USD/BRL).",
-      fullDescription: "O projeto focou em construir um sistema de dados pronto para produção, integrando tecnologias de backend e frontend. \n \
-        \n • **Pipeline ETL Automatizada:** Processo agendado em Python/Pandas que extrai dados de API externa e os carrega de forma robusta no PostgreSQL. \n \
-        \n • **Módulo de Sistema em Go (Golang):** Implementação de um microserviço em Go para consultas rápidas ao banco e busca do valor mais recente, demonstrando proficiência em linguagens de sistema. \n \
-        \n • **Análise de Anomalias:** Lógica de negócio em Python que calcula a Média Móvel dos últimos 7 dias e dispara alertas se a cotação ultrapassar um threshold de variação. \n \
-        \n • **Dashboard Interativo (Plotly Dash):** Construção de um *frontend* web puramente em Python, conectado ao PostgreSQL, para visualização em tempo real da série temporal histórica.",
-      image: finance_dashboard,
-      technologies: [
-        "Python",
-        "Go (Golang)",
-        "PostgreSQL",
-        "SQLAlchemy",
-        "Plotly Dash",
-        "Pandas",
-        "Agendamento (Cron/Scheduler)",
-        "ETL Automation"
-      ],
-      githubUrl: "https://github.com/GabrielSantos777/FluxGuard_financeira_pipeline",
-      demoUrl: "",
-      featured: true,
-    },
-    {
-      id: "opinion",
-      title: "OpiniON",
-      description: "O OpiniON é um projeto desenvolvido para coletar, analisar e visualizar comentários de produtos disponíveis online",
-      fullDescription: "OpiniON é uma ferramenta de análise de sentimentos que utiliza técnicas de Processamento de Linguagem Natural (NLP) para extrair insights de comentários e reviews. O OpiniON realiza as seguintes etapas: \n • Coleta de Comentários: Automatiza a extração de avaliações de produtos em plataformas online, no caso foi usado o site da Amazon.\n • Análise de Sentimentos: Utiliza uma API do Gemini para classificar os comentários em três categorias: Positivo, Neutro ou Negativo. \n • Armazenamento de Dados: Salva os comentários e seus respectivos sentimentos em um banco de dados SQLite. \n • Visualização Gráfica: Gera um gráfico de barras para representar a distribuiçãodos sentimentos dos comentários coletados;",
-      image: opinion,
-      technologies: ["Python", "SQLite", "Selenium", "Matplotlib", "Gemini", "Regex"],
-      githubUrl: "https://github.com/GabrielSantos777/OpiniON",
-      featured: true,
-    },
-    {
-      id: "skysync",
-      title: "SkySync",
-      description: "SkySync é uma aplicação web que exibe a condição climática de todas as cidades, estados ou países do mundo..",
-      fullDescription: "SkySync é uma aplicação web que exibe a condição climática de todas as cidades, estados ou países do mundo. Obtendo tanto os dados da temperatura atual, velocidade do vento e o nível de umidade. \n O SkySync realiza as seguintes funções: \n • Coleta da Temperatura atual. \n • Coleta da Velocidade do vento. \n • Nível de umidade;",
-      image: skysync,
-      technologies: ["HTLM5", "CSS3", "JavaScript", "Open Weather API"],
-      githubUrl: "https://github.com/GabrielSantos777/SkySync",
-      featured: false,
-    },
-  ];
+  const filteredProjects = useMemo(
+    () =>
+      projects.filter(
+        (project) => activeFilterId === "all" || project.filters.includes(activeFilterId),
+      ),
+    [activeFilterId],
+  );
 
-  const featuredProjects = projects.filter(p => p.featured);
-  const allProjects = projects;
+  const featuredProjects = useMemo(
+    () => filteredProjects.filter((project) => project.isFeatured && !project.isComingSoon),
+    [filteredProjects],
+  );
+
+  const compactProjects = useMemo(
+    () => filteredProjects.filter((project) => !project.isFeatured),
+    [filteredProjects],
+  );
 
   return (
-    <section id="projects" className="bg-card/50">
+    <section id="projects" className="section-shell border-t border-white/5">
       <div className="section-container">
-        <h2 className="section-title">Projetos</h2>
+        <span className="section-label">// projetos</span>
+        <h2 className="section-title">O que construi</h2>
+        <p className="section-description">
+          Projetos reais com impacto mensuravel. Clique em qualquer projeto para ver detalhes da arquitetura e das
+          decisoes tecnicas.
+        </p>
 
-        {/* Featured Projects */}
-        <div className="mb-16">
-          <h3 className="text-2xl font-bold text-primary mb-8 text-center">Destaques</h3>
-          <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {featuredProjects.map((project, index) => (
-              <div
+        <div className="mb-10 flex flex-wrap gap-2">
+          {projectFilters.map((projectFilter) => (
+            <button
+              key={projectFilter.id}
+              type="button"
+              onClick={() => setActiveFilterId(projectFilter.id)}
+              className={`rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] transition-all ${
+                activeFilterId === projectFilter.id
+                  ? "border-primary/35 bg-primary/10 text-primary"
+                  : "border-white/10 text-muted-foreground hover:border-primary/30 hover:text-primary"
+              }`}
+            >
+              {projectFilter.label}
+            </button>
+          ))}
+        </div>
+
+        {featuredProjects.length > 0 ? (
+          <div className="grid gap-5 lg:grid-cols-2">
+            {featuredProjects.map((project) => (
+              <article
                 key={project.id}
-                className="group bg-card border border-border rounded-lg overflow-hidden card-hover animate-fade-in cursor-pointer"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                className="group cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition-all hover:-translate-y-1 hover:border-primary/35"
                 onClick={() => setSelectedProject(project)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    setSelectedProject(project);
+                  }
+                }}
               >
-                <div className="relative overflow-hidden">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent opacity-60"></div>
+                <div className="relative h-52 overflow-hidden bg-gradient-to-br from-card via-card to-primary/10">
+                  {project.image ? (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      className="size-full object-cover opacity-70 transition-all duration-500 group-hover:scale-105 group-hover:opacity-90"
+                    />
+                  ) : null}
+                  <span className="absolute left-4 top-4 rounded-md border border-primary/35 bg-black/60 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-primary">
+                    Destaque
+                  </span>
                 </div>
 
-                <div className="p-6 space-y-4">
-                  <h4 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors">
-                    {project.title}
-                  </h4>
-                  <p className="text-muted-foreground">{project.description}</p>
+                <div className="space-y-5 p-6">
+                  <div>
+                    <h3 className="font-display text-2xl font-extrabold tracking-tight text-foreground">{project.title}</h3>
+                    <p className="mt-2 text-sm leading-7 text-muted-foreground">{project.description}</p>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4">
+                    {project.metrics.map((metric) => (
+                      <div key={`${project.id}-${metric.label}`} className="space-y-1">
+                        <p className="font-display text-xl font-extrabold text-primary">{metric.value}</p>
+                        <p className="text-[11px] uppercase tracking-[0.12em] text-muted-foreground">{metric.label}</p>
+                      </div>
+                    ))}
+                  </div>
 
                   <div className="flex flex-wrap gap-2">
-                    {project.technologies.map((tech) => (
+                    {project.tech.slice(0, 5).map((techItem) => (
                       <span
-                        key={tech}
-                        className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                        key={`${project.id}-${techItem}`}
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-muted-foreground"
                       >
-                        {tech}
+                        {techItem}
                       </span>
                     ))}
                   </div>
+
+                  <div className="flex items-center gap-3 text-sm">
+                    <span className="rounded-md border border-primary/35 bg-primary/10 px-3 py-1.5 text-primary">
+                      Ver detalhes
+                    </span>
+                    {project.githubUrl ? (
+                      <a
+                        href={project.githubUrl}
+                        onClick={(event) => event.stopPropagation()}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="rounded-md border border-white/10 px-3 py-1.5 text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+                      >
+                        GitHub
+                      </a>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
-        </div>
+        ) : (
+          <p className="rounded-xl border border-dashed border-white/20 p-6 text-center text-sm text-muted-foreground">
+            Nenhum projeto em destaque para esse filtro no momento.
+          </p>
+        )}
 
-        {/* All Projects */}
-        <div>
-          <h3 className="text-2xl font-bold text-primary mb-8 text-center">Todos os projetos</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {allProjects.map((project, index) => (
-              <div
+        <div className="mt-10">
+          <h3 className="mb-4 font-display text-xl font-bold text-muted-foreground">Outros projetos</h3>
+
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {compactProjects.map((project) => (
+              <article
                 key={project.id}
-                className="group bg-card border border-border rounded-lg overflow-hidden card-hover animate-slide-up cursor-pointer"
-                style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => setSelectedProject(project)}
+                className={`relative rounded-xl border p-5 transition-all ${
+                  project.isComingSoon
+                    ? "border-dashed border-white/15 bg-white/[0.02] opacity-70"
+                    : "group cursor-pointer border-white/10 bg-white/[0.04] hover:-translate-y-1 hover:border-primary/30"
+                }`}
+                onClick={() => {
+                  if (!project.isComingSoon) {
+                    setSelectedProject(project);
+                  }
+                }}
+                role={project.isComingSoon ? undefined : "button"}
+                tabIndex={project.isComingSoon ? undefined : 0}
+                onKeyDown={(event) => {
+                  if (!project.isComingSoon && (event.key === "Enter" || event.key === " ")) {
+                    event.preventDefault();
+                    setSelectedProject(project);
+                  }
+                }}
               >
-                <div className="relative overflow-hidden h-48">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
+                <p className="text-3xl">{project.emoji}</p>
+                <h4 className="mt-3 font-display text-lg font-bold text-foreground">{project.title}</h4>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{project.description}</p>
+
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {project.tech.slice(0, 3).map((techItem) => (
+                    <span
+                      key={`${project.id}-${techItem}`}
+                      className="rounded-full border border-white/10 px-2 py-1 text-[10px] uppercase tracking-[0.08em] text-muted-foreground"
+                    >
+                      {techItem}
+                    </span>
+                  ))}
                 </div>
 
-                <div className="p-4">
-                  <h4 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors mb-2">
-                    {project.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground line-clamp-2">
-                    {project.description}
-                  </p>
-                </div>
-              </div>
+                {!project.isComingSoon ? (
+                  <ArrowUpRight className="absolute right-4 top-4 text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" size={16} />
+                ) : null}
+              </article>
             ))}
           </div>
         </div>
 
-        {/* Project Modal */}
-        <Dialog open={!!selectedProject} onOpenChange={() => setSelectedProject(null)}>
-          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-            {selectedProject && (
+        <Dialog
+          open={Boolean(selectedProject)}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) {
+              setSelectedProject(null);
+            }
+          }}
+        >
+          <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto border-white/10 bg-card">
+            {selectedProject ? (
               <>
                 <DialogHeader>
-                  <DialogTitle className="text-2xl">{selectedProject.title}</DialogTitle>
-                  <DialogDescription className="text-base">
-                    {selectedProject.fullDescription}
+                  <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary">{selectedProject.category}</p>
+                  <DialogTitle className="font-display text-3xl font-extrabold tracking-tight">
+                    {selectedProject.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-base leading-7 text-muted-foreground">
+                    {selectedProject.summary}
                   </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-6">
-                  <img
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="w-full rounded-lg"
-                  />
+                  <div className="overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-card to-primary/10">
+                    {selectedProject.image ? (
+                      <img src={selectedProject.image} alt={selectedProject.title} className="h-64 w-full object-cover" />
+                    ) : (
+                      <div className="grid h-64 place-items-center text-7xl">{selectedProject.emoji}</div>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    {selectedProject.metrics.map((metric) => (
+                      <div key={`${selectedProject.id}-${metric.label}`} className="rounded-lg border border-white/10 bg-white/[0.04] p-4">
+                        <p className="font-display text-2xl font-extrabold text-primary">{metric.value}</p>
+                        <p className="mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{metric.label}</p>
+                      </div>
+                    ))}
+                  </div>
 
                   <div>
-                    <h4 className="font-semibold mb-2">Tecnologias:</h4>
+                    <h4 className="mb-3 font-display text-lg font-bold text-foreground">Funcionalidades principais</h4>
+                    <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
+                      {selectedProject.features.map((feature) => (
+                        <li key={feature} className="rounded-md border border-white/5 bg-white/[0.03] px-3 py-2">
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-3 font-display text-lg font-bold text-foreground">Tecnologias utilizadas</h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedProject.technologies.map((tech) => (
-                        <span
-                          key={tech}
-                          className="px-3 py-1 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
-                        >
-                          {tech}
+                      {selectedProject.tech.map((techItem) => (
+                        <span key={`${selectedProject.id}-${techItem}`} className="rounded-full border border-white/10 px-3 py-1 text-xs text-muted-foreground">
+                          {techItem}
                         </span>
                       ))}
                     </div>
                   </div>
 
-                  <div className="flex gap-4">
-                    {selectedProject.githubUrl && (
-                      <Button
-                        asChild
-                        variant="outline"
-                        className="border-primary text-primary hover:bg-primary/10"
-                      >
-                        <a href={selectedProject.githubUrl} target="_blank" rel="noopener noreferrer">
-                          <Github className="mr-2 h-4 w-4" />
-                          GitHub
+                  <div className="flex flex-wrap gap-3">
+                    {selectedProject.githubUrl ? (
+                      <Button asChild variant="outline" className="gap-2 border-white/15 bg-white/[0.03] text-foreground hover:bg-white/[0.08]">
+                        <a href={selectedProject.githubUrl} target="_blank" rel="noreferrer noopener">
+                          <Github size={16} /> GitHub
                         </a>
                       </Button>
-                    )}
-                    {selectedProject.demoUrl && (
-                      <Button
-                        asChild
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
-                      >
-                        <a href={selectedProject.demoUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="mr-2 h-4 w-4" />
-                          Demo
+                    ) : null}
+
+                    {selectedProject.demoUrl ? (
+                      <Button asChild className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+                        <a href={selectedProject.demoUrl} target="_blank" rel="noreferrer noopener">
+                          <ExternalLink size={16} /> Ver demo
                         </a>
                       </Button>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </>
-            )}
+            ) : null}
           </DialogContent>
         </Dialog>
       </div>
@@ -288,3 +277,4 @@ const Projects = () => {
 };
 
 export default Projects;
+

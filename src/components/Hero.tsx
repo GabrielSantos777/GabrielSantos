@@ -1,99 +1,167 @@
-import { Github, Linkedin, Mail, Download } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import avatarImage from "@/assets/avatar_me.png";
-import cvFile from "@/assets/Curriculo_Gabriel_Erick_Santos.pdf";
+import { heroAvatar, heroStats, resumeFile, socialLinks } from "@/data/portfolio-data";
+
+type CountUpProps = {
+  value: number;
+  suffix?: string;
+  shouldStart: boolean;
+};
+
+const CountUpValue = ({ value, suffix, shouldStart }: CountUpProps) => {
+  const [currentValue, setCurrentValue] = useState(0);
+
+  useEffect(() => {
+    if (!shouldStart) {
+      return;
+    }
+
+    const durationInMilliseconds = 1200;
+    const animationStart = performance.now();
+
+    const runAnimation = (timestamp: number) => {
+      const progress = Math.min((timestamp - animationStart) / durationInMilliseconds, 1);
+      setCurrentValue(Math.round(progress * value));
+
+      if (progress < 1) {
+        requestAnimationFrame(runAnimation);
+      }
+    };
+
+    requestAnimationFrame(runAnimation);
+  }, [shouldStart, value]);
+
+  return (
+    <span className="font-display text-3xl font-extrabold tracking-tight text-primary">
+      {currentValue}
+      {suffix}
+    </span>
+  );
+};
 
 const Hero = () => {
+  const statsRef = useRef<HTMLDivElement | null>(null);
+  const [shouldAnimateStats, setShouldAnimateStats] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldAnimateStats(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+
+    if (statsRef.current) {
+      observer.observe(statsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
-    <section
-      id="hero"
-      className="min-h-screen flex items-center justify-center pt-16"
-    >
-      <div className="section-container">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
-          <div className="space-y-6 animate-fade-in">
-            <div className="space-y-2">
-              <p className="text-primary font-mono text-sm md:text-base">
-                Olá, eu sou
-              </p>
-              <h1 className="text-5xl md:text-7xl font-bold">Gabriel Santos</h1>
-              <p className="text-xl md:text-2xl text-muted-foreground">
-                Desenvolvedor Full Stack
-              </p>
-            </div>
+    <section id="hero" className="section-shell pb-16 pt-36">
+      <div className="section-container grid items-center gap-14 lg:grid-cols-[minmax(0,1fr)_360px] xl:gap-20">
+        <div className="space-y-8">
+          <p className="inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/10 px-4 py-2 font-mono text-xs uppercase tracking-[0.18em] text-primary">
+            <span className="size-2 animate-pulse rounded-full bg-primary" />
+            Disponivel para oportunidades
+          </p>
 
-            <p className="text-lg text-muted-foreground max-w-xl">
-              Transformo ideias em soluções digitais e dados em insights
-              estratégicos. Atuo no desenvolvimento de aplicações e na
-              construção de análises orientadas a negócio, com foco em
-              performance, escalabilidade e geração de valor.
-            </p>
+          <h1 className="font-display text-[clamp(2.8rem,9vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]">
+            <span className="block">Full Stack</span>
+            <span className="block text-transparent [-webkit-text-stroke:1px_hsl(var(--primary)/0.5)]">
+              & Data
+            </span>
+            <span className="block text-primary">Analyst</span>
+          </h1>
 
-            <div className="flex flex-wrap gap-4">
-              <Button
-                asChild
-                size="lg"
-                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold neon-glow"
-              >
-                <a
-                  href={cvFile}
-                  download="Curriculo_Gabriel_Santos.pdf"
-                  className="flex items-center gap-2"
-                >
-                  <Download size={20} />
-                  Baixar CV
-                </a>
-              </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-primary text-primary hover:bg-primary/10"
-              >
-                <a href="#contact">Entrar em Contato</a>
-              </Button>
-            </div>
+          <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+            Desenvolvo <strong className="font-medium text-foreground">produtos digitais orientados a dados</strong>{" "}
+            de aplicacoes web escalaveis a pipelines de analise e dashboards que transformam numeros em decisoes
+            estrategicas.
+          </p>
 
-            {/* Social Links */}
-            <div className="flex gap-4 pt-4">
-              <a
-                href="https://github.com/GabrielSantos777"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="GitHub"
-              >
-                <Github size={24} />
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg" className="gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
+              <a href="#projects">
+                Ver projetos <ArrowRight size={16} />
               </a>
-              <a
-                href="https://www.linkedin.com/in/gabriel-santos-880200249"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin size={24} />
+            </Button>
+
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="gap-2 border-white/15 bg-white/5 text-muted-foreground hover:border-primary/35 hover:bg-primary/10 hover:text-primary"
+            >
+              <a href={resumeFile} download="Curriculo_Gabriel_Santos.pdf">
+                Baixar CV <Download size={16} />
               </a>
-              <a
-                href="mailto:gabrielsantos.erick@outlook.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
-                aria-label="Email"
-              >
-                <Mail size={24} />
-              </a>
-            </div>
+            </Button>
           </div>
 
-          {/* Avatar */}
-          <div className="flex justify-center animate-slide-up">
-            <div className="relative">
-              <div className="absolute inset-0 bg-primary/20 rounded-full blur-3xl animate-glow"></div>
-              <img
-                src={avatarImage}
-                alt="Batman Dev"
-                className="relative w-64 h-64 md:w-96 md:h-96 rounded-full object-cover border-4 border-primary/30 shadow-2xl"
-              />
+          <div className="flex items-center gap-4 pt-2">
+            {socialLinks.map((socialLink) => {
+              const iconByLabel = {
+                GitHub: Github,
+                LinkedIn: Linkedin,
+                Email: Mail,
+              };
+              const Icon = iconByLabel[socialLink.label as keyof typeof iconByLabel];
+
+              return (
+                <a
+                  key={socialLink.label}
+                  href={socialLink.href}
+                  target={socialLink.href.startsWith("http") ? "_blank" : undefined}
+                  rel={socialLink.href.startsWith("http") ? "noreferrer noopener" : undefined}
+                  className="inline-flex size-10 items-center justify-center rounded-md border border-white/10 text-muted-foreground transition-all hover:border-primary/35 hover:bg-primary/10 hover:text-primary"
+                  aria-label={socialLink.label}
+                >
+                  <Icon size={17} />
+                </a>
+              );
+            })}
+          </div>
+
+          <div
+            ref={statsRef}
+            className="grid grid-cols-2 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]"
+          >
+            {heroStats.map((statItem) => (
+              <div key={statItem.label} className="border border-white/5 px-5 py-4 text-center">
+                <CountUpValue value={statItem.value} suffix={statItem.suffix} shouldStart={shouldAnimateStats} />
+                <p className="mt-1 text-xs uppercase tracking-[0.12em] text-muted-foreground">{statItem.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative mx-auto w-full max-w-[340px]">
+          <div className="relative aspect-square">
+            <div className="absolute inset-0 rounded-full border border-primary/30" />
+            <div className="absolute -inset-4 animate-[spin_20s_linear_infinite] rounded-full border border-dashed border-primary/20" />
+            <div className="absolute -inset-8 animate-[spin_35s_linear_infinite_reverse] rounded-full border border-dashed border-primary/10" />
+            <img
+              src={heroAvatar}
+              alt="Gabriel Santos"
+              className="relative size-full rounded-full object-cover p-5 grayscale-[20%]"
+            />
+          </div>
+
+          <div className="absolute -bottom-3 right-0 rounded-xl border border-primary/30 bg-card/95 px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="size-2.5 animate-pulse rounded-full bg-primary" />
+              <div>
+                <p className="text-xs font-semibold text-foreground">Aberto a oportunidades</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
+                  CLT - PJ - Remoto
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -103,3 +171,4 @@ const Hero = () => {
 };
 
 export default Hero;
+
