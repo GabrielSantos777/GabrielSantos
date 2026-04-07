@@ -5,12 +5,11 @@ import { cn } from "@/lib/utils";
 
 const styles = {
   section: "section-shell border-t border-white/5",
-  grid: "grid gap-4 md:grid-cols-2 xl:grid-cols-3 mt-8",
+  grid: "mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3",
   articleCardBase: "rounded-xl border p-5 transition-all",
   articleCardDefault:
     "border-white/10 bg-white/[0.04] hover:-translate-y-1 hover:border-primary/30",
-  articleCardComingSoon:
-    "border-dashed border-white/15 bg-white/[0.02] opacity-70",
+  articleCardComingSoon: "border-dashed border-white/15 bg-white/[0.02] opacity-70",
   articleIcon:
     "mb-4 flex size-12 items-center justify-center rounded-lg bg-primary/10 text-2xl",
   articleCategory: "font-mono text-[11px] uppercase tracking-[0.12em] text-primary",
@@ -23,6 +22,8 @@ const styles = {
     "rounded-xl border border-white/10 bg-white/[0.04] p-5 text-sm text-muted-foreground",
   errorState:
     "rounded-xl border border-dashed border-amber-400/40 bg-amber-400/10 p-5 text-sm text-amber-200",
+  refreshButton:
+    "inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary",
 };
 
 type FeedArticle = Article;
@@ -40,6 +41,10 @@ type Rss2JsonPayload = {
   status?: string;
   items?: Rss2JsonItem[];
   message?: string;
+};
+
+type AllOriginsPayload = {
+  contents?: string;
 };
 
 const stripHtmlTags = (content: string) =>
@@ -143,17 +148,18 @@ const mapXmlItems = (xmlText: string, maxItems: number): FeedArticle[] => {
   return [];
 };
 
-const withCacheBuster = (urlValue: string, cacheKey: string) => {
-  const parsedUrl = new URL(ensureHttps(urlValue));
-  parsedUrl.searchParams.set("cb", cacheKey);
-  return parsedUrl.toString();
-};
-
 const ensureHttps = (urlLike: string) => {
   if (urlLike.startsWith("http://") || urlLike.startsWith("https://")) {
     return urlLike;
   }
   return `https://${urlLike}`;
+};
+
+const formatFetchError = (error: unknown) => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  return "erro desconhecido";
 };
 
 const normalizeMediumFeedUrl = (feedUrlFromEnv?: string, mediumHandleFromEnv?: string) => {
@@ -198,28 +204,79 @@ const loadMediumArticles = async (
   feedUrl: string,
   maxItems: number,
 ): Promise<FeedArticle[]> => {
-  // Prioriza XML direto para evitar cache agressivo de agregadores.
-  const allOriginsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
-  const allOriginsResponse = await fetch(allOriginsUrl, { cache: "no-store" });
-  if (allOriginsResponse.ok) {
-    const xmlText = await allOriginsResponse.text();
-    const parsedItems = mapXmlItems(xmlText, maxItems);
-    if (parsedItems.length > 0) {
-      return parsedItems;
-    }
-  }
+  const cacheKey = Date.now().toString();
+  const sourceErrors: string[] = [];
 
-  // Fallback para RSS2JSON.
-  const rss2JsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-  const rss2JsonResponse = await fetch(rss2JsonUrl, { cache: "no-store" });
-  if (rss2JsonResponse.ok) {
-    const payload = (await rss2JsonResponse.json()) as Rss2JsonPayload;
+  const readXmlFromAllOriginsRaw = async () => {
+    const sourceUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}&cb=${cacheKey}`;
+    const response = await fetch(sourceUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+      sourceErrors.push(`allorigins(raw): HTTP ${response.status}`);
+      return [];
+    }
+
+    const xmlText = await response.text();
+    const parsedItems = mapXmlItems(xmlText, maxItems);
+    if (parsedItems.length === 0) {
+      sourceErrors.push("allorigins(raw): resposta sem itens");
+    }
+    return parsedItems;
+  };
+
+  const readXmlFromAllOriginsJson = async () => {
+    const sourceUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}&cb=${cacheKey}`;
+    const response = await fetch(sourceUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+      sourceErrors.push(`allorigins(json): HTTP ${response.status}`);
+      return [];
+    }
+
+    const payload = (await response.json()) as AllOriginsPayload;
+    if (!payload.contents) {
+      sourceErrors.push("allorigins(json): resposta sem conteúdo");
+      return [];
+    }
+
+    const parsedItems = mapXmlItems(payload.contents, maxItems);
+    if (parsedItems.length === 0) {
+      sourceErrors.push("allorigins(json): resposta sem itens");
+    }
+    return parsedItems;
+  };
+
+  const readFromRss2Json = async () => {
+    const sourceUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=${maxItems}&cb=${cacheKey}`;
+    const response = await fetch(sourceUrl, { cache: "no-store" });
+
+    if (!response.ok) {
+      sourceErrors.push(`rss2json: HTTP ${response.status}`);
+      return [];
+    }
+
+    const payload = (await response.json()) as Rss2JsonPayload;
     if (payload?.status === "ok" && Array.isArray(payload.items) && payload.items.length > 0) {
       return mapRss2JsonItems(payload.items, maxItems);
     }
+
+    sourceErrors.push("rss2json: resposta sem itens");
+    return [];
+  };
+
+  const sources = [readXmlFromAllOriginsRaw, readXmlFromAllOriginsJson, readFromRss2Json];
+  for (const source of sources) {
+    try {
+      const items = await source();
+      if (items.length > 0) {
+        return items;
+      }
+    } catch (error) {
+      sourceErrors.push(formatFetchError(error));
+    }
   }
 
-  throw new Error("Não foi possível ler os artigos do Medium.");
+  throw new Error(`Não foi possível ler os artigos do Medium. ${sourceErrors.join(" | ")}`);
 };
 
 const Articles = () => {
@@ -241,18 +298,13 @@ const Articles = () => {
 
         const feedUrlFromEnv = import.meta.env.VITE_MEDIUM_FEED_URL?.trim();
         const mediumHandleFromEnv = import.meta.env.VITE_MEDIUM_HANDLE?.trim();
-        const maxItems = Number(import.meta.env.VITE_MEDIUM_MAX_ITEMS || 6);
+        const maxItemsFromEnv = Number(import.meta.env.VITE_MEDIUM_MAX_ITEMS);
+        const maxItems = Number.isFinite(maxItemsFromEnv) && maxItemsFromEnv > 0 ? maxItemsFromEnv : 6;
 
         const mediumFeedUrl = normalizeMediumFeedUrl(feedUrlFromEnv, mediumHandleFromEnv);
-        const mediumFeedUrlWithCacheBypass = withCacheBuster(
-          mediumFeedUrl,
-          Date.now().toString(),
-        );
         setConfiguredFeedUrl(mediumFeedUrl);
-        const loadedArticles = await loadMediumArticles(
-          mediumFeedUrlWithCacheBypass,
-          maxItems,
-        );
+
+        const loadedArticles = await loadMediumArticles(mediumFeedUrl, maxItems);
 
         if (isComponentMounted) {
           setMediumArticles(loadedArticles);
@@ -293,25 +345,23 @@ const Articles = () => {
           tecnologia & dados
         </h2>
 
-        {/* {isLoadingMediumFeed ? (
+        {isLoadingMediumFeed ? (
           <div className={styles.loadingState}>
             <p className="inline-flex items-center gap-2">
               <RefreshCcw size={16} className="animate-spin" /> Carregando artigos do Medium...
             </p>
           </div>
-        ) : null}
-
-        {!isLoadingMediumFeed ? (
+        ) : (
           <div className="mb-4">
             <button
               type="button"
               onClick={() => setRefreshCounter((previousValue) => previousValue + 1)}
-              className="inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+              className={styles.refreshButton}
             >
               <RefreshCcw size={14} /> Atualizar artigos agora
             </button>
           </div>
-        ) : null} */}
+        )}
 
         {!isLoadingMediumFeed && hasMediumFeedError ? (
           <div className={styles.errorState}>
@@ -326,7 +376,7 @@ const Articles = () => {
             ) : null}
             <p className="mt-2 text-xs text-amber-100/80">
               Dica: você pode informar <code>VITE_MEDIUM_HANDLE</code>,{" "}
-              <code>VITE_MEDIUM_FEED_URL</code> com URL de perfil, ou URL RSS. O sistema converte automaticamente.
+              <code>VITE_MEDIUM_FEED_URL</code> com URL de perfil ou URL RSS.
             </p>
           </div>
         ) : null}
