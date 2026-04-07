@@ -19,8 +19,8 @@ const styles = {
   headline:
     "font-display text-[clamp(2.8rem,9vw,5.4rem)] font-extrabold leading-[0.95] tracking-[-0.04em]",
   headlineAccent:
-    "block text-transparent [-webkit-text-stroke:1px_hsl(var(--primary)/0.5)]",
-  headlineHighlight: "block text-primary",
+    "text-transparent [-webkit-text-stroke:1px_hsl(var(--primary)/0.9)]",
+  headlineHighlight: "text-primary ml-5",
   description: "max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg",
   descriptionStrong: "font-medium text-foreground",
   actionsRow: "flex flex-wrap gap-3",
@@ -118,7 +118,7 @@ const Hero = () => {
           <h1 className={styles.headline}>
             <span className="block">Full Stack</span>
             <span className={styles.headlineAccent}>& Data</span>
-            <span className={styles.headlineHighlight}>Engineer</span>
+            <span className={styles.headlineHighlight}>Analyst</span>
           </h1>
 
           <p className={styles.description}>

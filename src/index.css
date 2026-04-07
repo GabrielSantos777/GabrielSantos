@@ -34,7 +34,7 @@
 
     --radius: 0.75rem;
 
-    --font-display: "Syne", sans-serif;
+    --font-display: "", sans-serif;
     --font-body: "DM Sans", sans-serif;
     --font-mono: "JetBrains Mono", monospace;
   }

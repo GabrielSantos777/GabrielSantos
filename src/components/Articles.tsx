@@ -143,6 +143,12 @@ const mapXmlItems = (xmlText: string, maxItems: number): FeedArticle[] => {
   return [];
 };
 
+const withCacheBuster = (urlValue: string, cacheKey: string) => {
+  const parsedUrl = new URL(ensureHttps(urlValue));
+  parsedUrl.searchParams.set("cb", cacheKey);
+  return parsedUrl.toString();
+};
+
 const ensureHttps = (urlLike: string) => {
   if (urlLike.startsWith("http://") || urlLike.startsWith("https://")) {
     return urlLike;
@@ -223,6 +229,7 @@ const Articles = () => {
   const [hasMediumFeedError, setHasMediumFeedError] = useState(false);
   const [mediumFeedErrorMessage, setMediumFeedErrorMessage] = useState("");
   const [configuredFeedUrl, setConfiguredFeedUrl] = useState("");
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
   useEffect(() => {
     let isComponentMounted = true;
@@ -238,8 +245,15 @@ const Articles = () => {
         const maxItems = Number(import.meta.env.VITE_MEDIUM_MAX_ITEMS || 6);
 
         const mediumFeedUrl = normalizeMediumFeedUrl(feedUrlFromEnv, mediumHandleFromEnv);
+        const mediumFeedUrlWithCacheBypass = withCacheBuster(
+          mediumFeedUrl,
+          Date.now().toString(),
+        );
         setConfiguredFeedUrl(mediumFeedUrl);
-        const loadedArticles = await loadMediumArticles(mediumFeedUrl, maxItems);
+        const loadedArticles = await loadMediumArticles(
+          mediumFeedUrlWithCacheBypass,
+          maxItems,
+        );
 
         if (isComponentMounted) {
           setMediumArticles(loadedArticles);
@@ -263,7 +277,7 @@ const Articles = () => {
     return () => {
       isComponentMounted = false;
     };
-  }, []);
+  }, [refreshCounter]);
 
   const renderedArticles = useMemo(
     () => (mediumArticles.length > 0 ? mediumArticles : fallbackArticles),
@@ -280,13 +294,25 @@ const Articles = () => {
           tecnologia & dados
         </h2>
 
-        {isLoadingMediumFeed ? (
+        {/* {isLoadingMediumFeed ? (
           <div className={styles.loadingState}>
             <p className="inline-flex items-center gap-2">
               <RefreshCcw size={16} className="animate-spin" /> Carregando artigos do Medium...
             </p>
           </div>
         ) : null}
+
+        {!isLoadingMediumFeed ? (
+          <div className="mb-4">
+            <button
+              type="button"
+              onClick={() => setRefreshCounter((previousValue) => previousValue + 1)}
+              className="inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary"
+            >
+              <RefreshCcw size={14} /> Atualizar artigos agora
+            </button>
+          </div>
+        ) : null} */}
 
         {!isLoadingMediumFeed && hasMediumFeedError ? (
           <div className={styles.errorState}>

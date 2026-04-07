@@ -1,6 +1,6 @@
 import avatarImage from "@/assets/avatar_me.png";
 import cvFile from "@/assets/Curriculo_Gabriel_Erick_Santos.pdf";
-import planixImage from "@/assets/planix.jpeg";
+import planixImage from "@/assets/planix.png";
 import olistImage from "@/assets/dashboard_olist.jpeg";
 import saasPulseImage from "@/assets/saasPulse.jpg";
 import pipelineImage from "@/assets/finance_dashboard.png";
@@ -166,7 +166,7 @@ export const skillCategories: SkillCategory[] = [
     label: "Frontend",
     skills: [
       {
-        iconImage: "/skills/html.svg",
+        iconImage: "/skills/html-5.svg",
         name: "HTML5",
         level: "Avançado",
         progress: 92,
@@ -180,7 +180,7 @@ export const skillCategories: SkillCategory[] = [
         tag: "Frontend",
       },
       {
-        iconImage: "/skills/tailwind.svg",
+        iconImage: "/skills/tailwindcss-icon.svg",
         name: "Tailwind CSS",
         level: "Avançado",
         progress: 85,
@@ -201,14 +201,14 @@ export const skillCategories: SkillCategory[] = [
         tag: "Frontend",
       },
       {
-        iconImage: "/skills/typescript.svg",
+        iconImage: "/skills/nextjs-icon.svg",
         name: "Next.js",
         level: "Intermediário",
         progress: 70,
         tag: "Frontend",
       },
       {
-        iconImage: "/skills/typescript.svg",
+        iconImage: "/skills/typescript-icon.svg",
         name: "TypeScript",
         level: "Intermediário",
         progress: 70,
@@ -242,28 +242,28 @@ export const skillCategories: SkillCategory[] = [
         tag: "Backend",
       },
       {
-        iconImage: "/skills/nodejs.svg",
+        iconImage: "/skills/nodejs-icon.svg",
         name: "Node.js",
         level: "Intermediário",
         progress: 50,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/nodejs.svg",
+        iconImage: "/skills/go.svg",
         name: "GO",
         level: "Iniciante",
         progress: 25,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/docker.svg",
+        iconImage: "/skills/docker-icon.svg",
         name: "Docker",
         level: "Intermediário",
         progress: 55,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/sql.svg",
+        iconImage: "/skills/nestjs.svg",
         name: "NestJS",
         level: "Intermediário",
         progress: 50,
@@ -284,28 +284,28 @@ export const skillCategories: SkillCategory[] = [
         tag: "Backend",
       },
       {
-        iconImage: "/skills/postgresql.svg",
+        iconImage: "/skills/mysql.svg",
         name: "MySQL",
         level: "Avançado",
         progress: 85,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/postgresql.svg",
+        iconImage: "/skills/prisma.svg",
         name: "Prisma",
         level: "Avançado",
         progress: 85,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/postgresql.svg",
+        iconImage: "/skills/firebase-icon.svg",
         name: "Firebase",
         level: "Avançado",
         progress: 85,
         tag: "Backend",
       },
       {
-        iconImage: "/skills/supabase.svg",
+        iconImage: "/skills/supabase-icon.svg",
         name: "Supabase",
         level: "Intermediário",
         progress: 85,
@@ -318,35 +318,35 @@ export const skillCategories: SkillCategory[] = [
     label: "Data & Analytics",
     skills: [
       {
-        iconImage: "/skills/power-bi.svg",
+        iconImage: "/skills/python.svg",
         name: "Python",
         level: "Avançado",
         progress: 88,
         tag: "Data Analysis",
       },
       {
-        iconImage: "/skills/power-bi.svg",
+        iconImage: "/skills/sql.svg",
         name: "SQL",
         level: "Avançado",
         progress: 88,
         tag: "Data Analysis",
       },
       {
-        iconImage: "/skills/power-bi.svg",
+        iconImage: "/skills/dax.svg",
         name: "DAX",
         level: "Avançado",
         progress: 88,
         tag: "Data Analysis",
       },
       {
-        iconImage: "/skills/power-bi.svg",
+        iconImage: "/skills/microsoft-power-bi.svg",
         name: "Power BI",
         level: "Avançado",
         progress: 88,
         tag: "Data Analysis",
       },
       {
-        iconImage: "/skills/tableau.svg",
+        iconImage: "/skills/tableau-icon.svg",
         name: "Tableau",
         level: "Avançado",
         progress: 88,
@@ -367,7 +367,7 @@ export const skillCategories: SkillCategory[] = [
         tag: "Data Apps",
       },
       {
-        iconImage: "/skills/machinelearning.svg",
+        iconImage: "/skills/machine-learning.svg",
         name: "Machine Learning",
         level: "Intermediário",
         progress: 75,
@@ -380,7 +380,7 @@ export const skillCategories: SkillCategory[] = [
     label: "Ferramentas",
     skills: [
       {
-        iconImage: "/skills/git-github.svg",
+        iconImage: "/skills/git-icon.svg",
         name: "Git & GitHub",
         level: "Avançado",
         progress: 90,
@@ -401,15 +401,15 @@ export const skillCategories: SkillCategory[] = [
         tag: "AI Tools",
       },
       {
-        iconImage: "/skills/rest-api.svg",
+        iconImage: "/skills/restapi.svg",
         name: "REST APIs",
         level: "Avançado",
         progress: 88,
         tag: "Integration",
       },
       {
-        iconImage: "/skills/vite-webpack.svg",
-        name: "Vite / Webpack",
+        iconImage: "/skills/vite-icon-dark.svg",
+        name: "Vite",
         level: "Intermediário",
         progress: 70,
         tag: "Tooling",
@@ -468,7 +468,7 @@ export const projects: PortfolioProject[] = [
     githubUrl: "https://github.com/GabrielSantos777/planix",
     demoUrl: "https://planix.space/landing",
     cardImage: planixImage,
-    modalMedia: { type: "image", src: "/project-media/planix-detail.svg" },
+    modalMedia: { type: "video", src: "/project-media/planix-demo.mp4" },
   },
   {
     id: "olist",
