@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, RefreshCcw } from "lucide-react";
-import { Article, articles as fallbackArticles } from "@/data/portfolio-data";
+import { Article } from "@/data/portfolio-data";
 import { cn } from "@/lib/utils";
 
 const styles = {
@@ -22,8 +22,6 @@ const styles = {
     "rounded-xl border border-white/10 bg-white/[0.04] p-5 text-sm text-muted-foreground",
   errorState:
     "rounded-xl border border-dashed border-amber-400/40 bg-amber-400/10 p-5 text-sm text-amber-200",
-  refreshButton:
-    "inline-flex items-center gap-2 rounded-md border border-white/15 px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary",
 };
 
 type FeedArticle = Article;
@@ -40,7 +38,6 @@ type Rss2JsonItem = {
 type Rss2JsonPayload = {
   status?: string;
   items?: Rss2JsonItem[];
-  message?: string;
 };
 
 type AllOriginsPayload = {
@@ -155,13 +152,6 @@ const ensureHttps = (urlLike: string) => {
   return `https://${urlLike}`;
 };
 
-const formatFetchError = (error: unknown) => {
-  if (error instanceof Error && error.message.trim()) {
-    return error.message;
-  }
-  return "erro desconhecido";
-};
-
 const normalizeMediumFeedUrl = (feedUrlFromEnv?: string, mediumHandleFromEnv?: string) => {
   const normalizeMediumUrlPath = (urlValue: string) => {
     const safeUrl = ensureHttps(urlValue);
@@ -207,7 +197,7 @@ const loadMediumArticles = async (
   const cacheKey = Date.now().toString();
   const sourceErrors: string[] = [];
 
-  const readXmlFromAllOriginsRaw = async () => {
+  const tryAllOriginsRaw = async () => {
     const sourceUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}&cb=${cacheKey}`;
     const response = await fetch(sourceUrl, { cache: "no-store" });
 
@@ -224,7 +214,7 @@ const loadMediumArticles = async (
     return parsedItems;
   };
 
-  const readXmlFromAllOriginsJson = async () => {
+  const tryAllOriginsJson = async () => {
     const sourceUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(feedUrl)}&cb=${cacheKey}`;
     const response = await fetch(sourceUrl, { cache: "no-store" });
 
@@ -246,7 +236,7 @@ const loadMediumArticles = async (
     return parsedItems;
   };
 
-  const readFromRss2Json = async () => {
+  const tryRss2Json = async () => {
     const sourceUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=${maxItems}&cb=${cacheKey}`;
     const response = await fetch(sourceUrl, { cache: "no-store" });
 
@@ -264,7 +254,7 @@ const loadMediumArticles = async (
     return [];
   };
 
-  const sources = [readXmlFromAllOriginsRaw, readXmlFromAllOriginsJson, readFromRss2Json];
+  const sources = [tryAllOriginsRaw, tryAllOriginsJson, tryRss2Json];
   for (const source of sources) {
     try {
       const items = await source();
@@ -272,11 +262,12 @@ const loadMediumArticles = async (
         return items;
       }
     } catch (error) {
-      sourceErrors.push(formatFetchError(error));
+      const message = error instanceof Error ? error.message : "erro desconhecido";
+      sourceErrors.push(message);
     }
   }
 
-  throw new Error(`Não foi possível ler os artigos do Medium. ${sourceErrors.join(" | ")}`);
+  throw new Error(`Não foi possível carregar os artigos do Medium. ${sourceErrors.join(" | ")}`);
 };
 
 const Articles = () => {
@@ -285,7 +276,6 @@ const Articles = () => {
   const [hasMediumFeedError, setHasMediumFeedError] = useState(false);
   const [mediumFeedErrorMessage, setMediumFeedErrorMessage] = useState("");
   const [configuredFeedUrl, setConfiguredFeedUrl] = useState("");
-  const [refreshCounter, setRefreshCounter] = useState(0);
 
   useEffect(() => {
     let isComponentMounted = true;
@@ -299,13 +289,13 @@ const Articles = () => {
         const feedUrlFromEnv = import.meta.env.VITE_MEDIUM_FEED_URL?.trim();
         const mediumHandleFromEnv = import.meta.env.VITE_MEDIUM_HANDLE?.trim();
         const maxItemsFromEnv = Number(import.meta.env.VITE_MEDIUM_MAX_ITEMS);
-        const maxItems = Number.isFinite(maxItemsFromEnv) && maxItemsFromEnv > 0 ? maxItemsFromEnv : 6;
+        const maxItems =
+          Number.isFinite(maxItemsFromEnv) && maxItemsFromEnv > 0 ? maxItemsFromEnv : 6;
 
         const mediumFeedUrl = normalizeMediumFeedUrl(feedUrlFromEnv, mediumHandleFromEnv);
         setConfiguredFeedUrl(mediumFeedUrl);
 
         const loadedArticles = await loadMediumArticles(mediumFeedUrl, maxItems);
-
         if (isComponentMounted) {
           setMediumArticles(loadedArticles);
         }
@@ -328,12 +318,7 @@ const Articles = () => {
     return () => {
       isComponentMounted = false;
     };
-  }, [refreshCounter]);
-
-  const renderedArticles = useMemo(
-    () => (mediumArticles.length > 0 ? mediumArticles : fallbackArticles),
-    [mediumArticles],
-  );
+  }, []);
 
   return (
     <section id="articles" className={styles.section}>
@@ -351,21 +336,11 @@ const Articles = () => {
               <RefreshCcw size={16} className="animate-spin" /> Carregando artigos do Medium...
             </p>
           </div>
-        ) : (
-          <div className="mb-4">
-            <button
-              type="button"
-              onClick={() => setRefreshCounter((previousValue) => previousValue + 1)}
-              className={styles.refreshButton}
-            >
-              <RefreshCcw size={14} /> Atualizar artigos agora
-            </button>
-          </div>
-        )}
+        ) : null}
 
         {!isLoadingMediumFeed && hasMediumFeedError ? (
           <div className={styles.errorState}>
-            <p>Não consegui carregar seu Medium agora. Exibindo os artigos de fallback.</p>
+            <p>Não consegui carregar seu Medium agora.</p>
             <p className="mt-2 text-xs text-amber-100/80">
               Feed usado: <code>{configuredFeedUrl || "não configurado"}</code>
             </p>
@@ -374,45 +349,49 @@ const Articles = () => {
                 Erro: <code>{mediumFeedErrorMessage}</code>
               </p>
             ) : null}
-            <p className="mt-2 text-xs text-amber-100/80">
-              Dica: você pode informar <code>VITE_MEDIUM_HANDLE</code>,{" "}
-              <code>VITE_MEDIUM_FEED_URL</code> com URL de perfil ou URL RSS.
-            </p>
           </div>
         ) : null}
 
-        <div className={styles.grid}>
-          {renderedArticles.map((article) => (
-            <article
-              key={article.id}
-              className={cn(
-                styles.articleCardBase,
-                article.isComingSoon ? styles.articleCardComingSoon : styles.articleCardDefault,
-              )}
-            >
-              <div className={styles.articleIcon}>{article.icon}</div>
+        {!isLoadingMediumFeed && !hasMediumFeedError && mediumArticles.length === 0 ? (
+          <div className={styles.loadingState}>
+            Nenhum artigo foi encontrado no feed do Medium.
+          </div>
+        ) : null}
 
-              <p className={styles.articleCategory}>{article.category}</p>
-              <h3 className={styles.articleTitle}>{article.title}</h3>
-              <p className={styles.articleExcerpt}>{article.excerpt}</p>
+        {!isLoadingMediumFeed && !hasMediumFeedError && mediumArticles.length > 0 ? (
+          <div className={styles.grid}>
+            {mediumArticles.map((article) => (
+              <article
+                key={article.id}
+                className={cn(
+                  styles.articleCardBase,
+                  article.isComingSoon ? styles.articleCardComingSoon : styles.articleCardDefault,
+                )}
+              >
+                <div className={styles.articleIcon}>{article.icon}</div>
 
-              <div className={styles.articleMeta}>
-                <span>{article.readTime}</span>
+                <p className={styles.articleCategory}>{article.category}</p>
+                <h3 className={styles.articleTitle}>{article.title}</h3>
+                <p className={styles.articleExcerpt}>{article.excerpt}</p>
 
-                {article.href && !article.isComingSoon ? (
-                  <a
-                    href={article.href}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className={styles.articleLink}
-                  >
-                    Ler artigo <ArrowRight size={14} />
-                  </a>
-                ) : null}
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className={styles.articleMeta}>
+                  <span>{article.readTime}</span>
+
+                  {article.href && !article.isComingSoon ? (
+                    <a
+                      href={article.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className={styles.articleLink}
+                    >
+                      Ler artigo <ArrowRight size={14} />
+                    </a>
+                  ) : null}
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : null}
       </div>
     </section>
   );
