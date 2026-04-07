@@ -198,9 +198,20 @@ const loadMediumArticles = async (
   feedUrl: string,
   maxItems: number,
 ): Promise<FeedArticle[]> => {
-  const rss2JsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
-  const rss2JsonResponse = await fetch(rss2JsonUrl);
+  // Prioriza XML direto para evitar cache agressivo de agregadores.
+  const allOriginsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
+  const allOriginsResponse = await fetch(allOriginsUrl, { cache: "no-store" });
+  if (allOriginsResponse.ok) {
+    const xmlText = await allOriginsResponse.text();
+    const parsedItems = mapXmlItems(xmlText, maxItems);
+    if (parsedItems.length > 0) {
+      return parsedItems;
+    }
+  }
 
+  // Fallback para RSS2JSON.
+  const rss2JsonUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}`;
+  const rss2JsonResponse = await fetch(rss2JsonUrl, { cache: "no-store" });
   if (rss2JsonResponse.ok) {
     const payload = (await rss2JsonResponse.json()) as Rss2JsonPayload;
     if (payload?.status === "ok" && Array.isArray(payload.items) && payload.items.length > 0) {
@@ -208,19 +219,7 @@ const loadMediumArticles = async (
     }
   }
 
-  const allOriginsUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(feedUrl)}`;
-  const allOriginsResponse = await fetch(allOriginsUrl);
-  if (!allOriginsResponse.ok) {
-    throw new Error("Falha ao carregar o feed do Medium.");
-  }
-
-  const xmlText = await allOriginsResponse.text();
-  const parsedItems = mapXmlItems(xmlText, maxItems);
-  if (parsedItems.length === 0) {
-    throw new Error("Não foi possível ler os artigos do Medium.");
-  }
-
-  return parsedItems;
+  throw new Error("Não foi possível ler os artigos do Medium.");
 };
 
 const Articles = () => {
