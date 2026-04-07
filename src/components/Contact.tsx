@@ -1,14 +1,11 @@
-import { FormEvent, useEffect, useState } from "react";
-import { BriefcaseBusiness, Github, Linkedin, Mail, Send } from "lucide-react";
+import { FormEvent, useState } from "react";
+import { AlertTriangle, CheckCircle2, Loader2, Github, Linkedin, Mail, Send } from "lucide-react";
 import { contactChannels } from "@/data/portfolio-data";
 
 const styles = {
   section: "section-shell border-t border-white/5",
   layout: "section-container grid gap-8 lg:grid-cols-2",
   introText: "max-w-xl text-base leading-8 text-muted-foreground",
-  availabilityBadge:
-    "mt-6 inline-flex items-center gap-2 rounded-full border border-primary/35 bg-primary/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.14em] text-primary",
-  availabilityDot: "size-2 animate-pulse rounded-full bg-primary",
   channelList: "mt-8 space-y-3",
   channelLink:
     "flex items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-3 transition-all hover:border-primary/30 hover:bg-primary/10",
@@ -23,8 +20,9 @@ const styles = {
   fieldTextarea:
     "h-32 w-full resize-none rounded-lg border border-white/10 bg-black/30 px-3 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-primary/40",
   submitButton:
-    "mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-medium text-primary-foreground transition-all hover:bg-primary/90",
+    "mt-2 inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-medium text-primary-foreground transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60",
   successMessage: "inline-flex items-center gap-2 text-sm text-primary",
+  errorMessage: "inline-flex items-center gap-2 text-sm text-amber-300",
 };
 
 type ContactFormData = {
@@ -34,6 +32,8 @@ type ContactFormData = {
   message: string;
 };
 
+type SubmitStatus = "idle" | "sending" | "success" | "error";
+
 const initialFormData: ContactFormData = {
   name: "",
   email: "",
@@ -41,31 +41,54 @@ const initialFormData: ContactFormData = {
   message: "",
 };
 
+const getDefaultEmailTarget = () =>
+  contactChannels.find((channel) => channel.id === "email")?.value || "";
+
 const Contact = () => {
   const [formData, setFormData] = useState<ContactFormData>(initialFormData);
-  const [isFeedbackVisible, setIsFeedbackVisible] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<SubmitStatus>("idle");
 
   const handleFieldChange = (field: keyof ContactFormData, value: string) => {
     setFormData((previousData) => ({ ...previousData, [field]: value }));
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsFeedbackVisible(true);
-    setFormData(initialFormData);
-  };
 
-  useEffect(() => {
-    if (!isFeedbackVisible) {
-      return;
+    const recipientEmail = getDefaultEmailTarget();
+    const endpointFromEnv = import.meta.env.VITE_CONTACT_FORM_ENDPOINT?.trim();
+    const endpoint = endpointFromEnv || `https://formsubmit.co/ajax/${recipientEmail}`;
+
+    setSubmitStatus("sending");
+
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          _subject: `[Portfolio] ${formData.subject}`,
+          _captcha: "false",
+          _template: "table",
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Falha ao enviar.");
+      }
+
+      setSubmitStatus("success");
+      setFormData(initialFormData);
+    } catch {
+      setSubmitStatus("error");
     }
-
-    const timeoutId = window.setTimeout(() => {
-      setIsFeedbackVisible(false);
-    }, 3000);
-
-    return () => window.clearTimeout(timeoutId);
-  }, [isFeedbackVisible]);
+  };
 
   return (
     <section id="contact" className={styles.section}>
@@ -78,13 +101,8 @@ const Contact = () => {
             algo juntos?
           </h2>
           <p className={styles.introText}>
-            Estou aberto a oportunidades de emprego, freelance e conversas sobre
-            tecnologia e dados. Respondo em até 24 horas.
-          </p>
-
-          <p className={styles.availabilityBadge}>
-            <span className={styles.availabilityDot} />
-            Disponível para CLT, PJ e freelance - remoto
+            Estou aberto a oportunidades de emprego, freelance e conversas sobre tecnologia e dados. Respondo em até
+            24 horas.
           </p>
 
           <div className={styles.channelList}>
@@ -151,7 +169,7 @@ const Contact = () => {
                 type="text"
                 value={formData.subject}
                 onChange={(event) => handleFieldChange("subject", event.target.value)}
-                placeholder="Oportunidade de trabalho / Projeto / etc"
+                placeholder="Oportunidade de trabalho / Projeto / etc."
                 className={styles.fieldInput}
                 required
               />
@@ -168,13 +186,27 @@ const Contact = () => {
               />
             </label>
 
-            <button type="submit" className={styles.submitButton}>
-              Enviar mensagem <Send size={16} />
+            <button type="submit" className={styles.submitButton} disabled={submitStatus === "sending"}>
+              {submitStatus === "sending" ? (
+                <>
+                  Enviando <Loader2 size={16} className="animate-spin" />
+                </>
+              ) : (
+                <>
+                  Enviar mensagem <Send size={16} />
+                </>
+              )}
             </button>
 
-            {isFeedbackVisible ? (
+            {submitStatus === "success" ? (
               <p className={styles.successMessage}>
-                <BriefcaseBusiness size={16} /> Obrigado! Mensagem recebida. Vou retornar em breve.
+                <CheckCircle2 size={16} /> Mensagem enviada com sucesso.
+              </p>
+            ) : null}
+
+            {submitStatus === "error" ? (
+              <p className={styles.errorMessage}>
+                <AlertTriangle size={16} /> Não consegui enviar agora. Verifique o endpoint do formulário.
               </p>
             ) : null}
           </div>
