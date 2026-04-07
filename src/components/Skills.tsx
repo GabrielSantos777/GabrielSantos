@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 const styles = {
   section: "section-shell border-t border-white/5",
   tabList:
-    "mb-10 inline-flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5",
+    "mb-10 mt-8 inline-flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/[0.04] p-1.5",
   tabButtonBase:
     "rounded-lg px-4 py-2 text-xs font-medium uppercase tracking-[0.1em] transition-all sm:text-sm",
   tabButtonActive: "border border-primary/35 bg-card text-foreground",

@@ -1,7 +1,13 @@
 import { useMemo, useState } from "react";
 import { ArrowUpRight, ExternalLink, Github } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   PortfolioProject,
   ProjectFilterId,
@@ -12,14 +18,17 @@ import { cn } from "@/lib/utils";
 
 const styles = {
   section: "section-shell border-t border-white/5",
-  filterRow: "mb-10 flex flex-wrap gap-2",
-  filterButtonBase: "rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] transition-all",
+  filterRow: "mt-6 mb-10 flex flex-wrap gap-2",
+  filterButtonBase:
+    "rounded-full border px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] transition-all",
   filterButtonActive: "border-primary/35 bg-primary/10 text-primary",
-  filterButtonDefault: "border-white/10 text-muted-foreground hover:border-primary/30 hover:text-primary",
+  filterButtonDefault:
+    "border-white/10 text-muted-foreground hover:border-primary/30 hover:text-primary",
   featuredGrid: "grid gap-5 lg:grid-cols-2",
   featuredCard:
     "group cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition-all hover:-translate-y-1 hover:border-primary/35",
-  featuredPreview: "relative h-52 overflow-hidden bg-gradient-to-br from-card via-card to-primary/10",
+  featuredPreview:
+    "relative h-52 overflow-hidden bg-gradient-to-br from-card via-card to-primary/10",
   featuredPreviewImage:
     "size-full object-cover opacity-70 transition-all duration-500 group-hover:scale-105 group-hover:opacity-90",
   featuredBadge:
@@ -32,21 +41,26 @@ const styles = {
   metricValue: "font-display text-xl font-extrabold text-primary",
   metricLabel: "text-[11px] uppercase tracking-[0.12em] text-muted-foreground",
   techRow: "flex flex-wrap gap-2",
-  techTag: "rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-muted-foreground",
+  techTag:
+    "rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-muted-foreground",
   featuredLinks: "flex items-center gap-3 text-sm",
   detailPill: "rounded-md border border-primary/35 bg-primary/10 px-3 py-1.5 text-primary",
   githubPill:
     "rounded-md border border-white/10 px-3 py-1.5 text-muted-foreground transition-colors hover:border-primary/30 hover:text-primary",
-  emptyState: "rounded-xl border border-dashed border-white/20 p-6 text-center text-sm text-muted-foreground",
+  emptyState:
+    "rounded-xl border border-dashed border-white/20 p-6 text-center text-sm text-muted-foreground",
   compactSection: "mt-10",
   compactSectionTitle: "mb-4 font-display text-xl font-bold text-muted-foreground",
   compactGrid: "grid gap-3 sm:grid-cols-2 lg:grid-cols-3",
-  compactCardBase: "relative rounded-xl border p-5 transition-all",
+  compactCardBase: "relative rounded-xl border p-4 transition-all",
   compactCardInteractive:
     "group cursor-pointer border-white/10 bg-white/[0.04] hover:-translate-y-1 hover:border-primary/30",
-  compactCardComingSoon: "border-dashed border-white/15 bg-white/[0.02] opacity-70",
-  compactEmoji: "text-3xl",
-  compactTitle: "mt-3 font-display text-lg font-bold text-foreground",
+  compactCardComingSoon: "border-dashed border-white/15 bg-white/[0.02] opacity-80",
+  compactPreview:
+    "relative mb-3 h-36 overflow-hidden rounded-lg border border-white/10 bg-gradient-to-br from-card to-primary/10",
+  compactPreviewImage:
+    "size-full object-cover opacity-80 transition-all duration-500 group-hover:scale-105 group-hover:opacity-95",
+  compactTitle: "mt-2 font-display text-lg font-bold text-foreground",
   compactDescription: "mt-2 text-sm leading-6 text-muted-foreground",
   compactTechRow: "mt-4 flex flex-wrap gap-1.5",
   compactTechTag:
@@ -58,9 +72,10 @@ const styles = {
   dialogTitle: "font-display text-3xl font-extrabold tracking-tight",
   dialogDescription: "text-base leading-7 text-muted-foreground",
   dialogBody: "space-y-6",
-  dialogPreview: "overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-card to-primary/10",
+  dialogPreview:
+    "overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-card to-primary/10",
   dialogPreviewImage: "h-64 w-full object-cover",
-  dialogPreviewEmoji: "grid h-64 place-items-center text-7xl",
+  dialogPreviewVideo: "h-64 w-full bg-black object-cover",
   dialogMetricsGrid: "grid gap-3 sm:grid-cols-3",
   dialogMetricCard: "rounded-lg border border-white/10 bg-white/[0.04] p-4",
   dialogMetricValue: "font-display text-2xl font-extrabold text-primary",
@@ -71,21 +86,61 @@ const styles = {
   dialogTechRow: "flex flex-wrap gap-2",
   dialogTechTag: "rounded-full border border-white/10 px-3 py-1 text-xs text-muted-foreground",
   dialogActions: "flex flex-wrap gap-3",
-  dialogGithubButton: "gap-2 border-white/15 bg-white/[0.03] text-foreground hover:bg-white/[0.08]",
+  dialogGithubButton:
+    "gap-2 border-white/15 bg-white/[0.03] text-foreground hover:bg-white/[0.08]",
   dialogDemoButton: "gap-2 bg-primary text-primary-foreground hover:bg-primary/90",
+};
+
+const renderModalMedia = (project: PortfolioProject) => {
+  if (!project.modalMedia) {
+    return (
+      <div className="grid h-64 place-items-center text-sm text-muted-foreground">
+        Adicione uma imagem ou vídeo de demonstração no campo{" "}
+        <code>modalMedia</code> deste projeto.
+      </div>
+    );
+  }
+
+  if (project.modalMedia.type === "video") {
+    return (
+      <video
+        className={styles.dialogPreviewVideo}
+        controls
+        playsInline
+        poster={project.modalMedia.poster}
+      >
+        <source src={project.modalMedia.src} />
+        Seu navegador não suporta reprodução de vídeo.
+      </video>
+    );
+  }
+
+  return (
+    <img
+      src={project.modalMedia.src}
+      alt={`Mídia detalhada de ${project.title}`}
+      className={styles.dialogPreviewImage}
+    />
+  );
 };
 
 const Projects = () => {
   const [activeFilterId, setActiveFilterId] = useState<ProjectFilterId>("all");
-  const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
+  const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(
+    null,
+  );
 
   const filteredProjects = useMemo(
-    () => projects.filter((project) => activeFilterId === "all" || project.filters.includes(activeFilterId)),
+    () =>
+      projects.filter(
+        (project) =>
+          activeFilterId === "all" || project.filters.includes(activeFilterId),
+      ),
     [activeFilterId],
   );
 
   const featuredProjects = useMemo(
-    () => filteredProjects.filter((project) => project.isFeatured && !project.isComingSoon),
+    () => filteredProjects.filter((project) => project.isFeatured),
     [filteredProjects],
   );
 
@@ -102,8 +157,7 @@ const Projects = () => {
         <span className="section-label">// projetos</span>
         <h2 className="section-title">O que construí</h2>
         <p className="section-description">
-          Projetos reais com impacto mensurável. Clique em qualquer projeto para
-          ver detalhes da arquitetura e das decisões técnicas.
+          Projetos reais com impacto mensurável.
         </p>
 
         <div className={styles.filterRow}>
@@ -114,7 +168,9 @@ const Projects = () => {
               onClick={() => setActiveFilterId(projectFilter.id)}
               className={cn(
                 styles.filterButtonBase,
-                activeFilterId === projectFilter.id ? styles.filterButtonActive : styles.filterButtonDefault,
+                activeFilterId === projectFilter.id
+                  ? styles.filterButtonActive
+                  : styles.filterButtonDefault,
               )}
             >
               {projectFilter.label}
@@ -139,7 +195,11 @@ const Projects = () => {
                 }}
               >
                 <div className={styles.featuredPreview}>
-                  {project.image ? <img src={project.image} alt={project.title} className={styles.featuredPreviewImage} /> : null}
+                  <img
+                    src={project.cardImage}
+                    alt={`Capa do projeto ${project.title}`}
+                    className={styles.featuredPreviewImage}
+                  />
                   <span className={styles.featuredBadge}>Destaque</span>
                 </div>
 
@@ -185,7 +245,9 @@ const Projects = () => {
             ))}
           </div>
         ) : (
-          <p className={styles.emptyState}>Nenhum projeto em destaque para esse filtro no momento.</p>
+          <p className={styles.emptyState}>
+            Nenhum projeto em destaque para esse filtro no momento.
+          </p>
         )}
 
         <div className={styles.compactSection}>
@@ -197,7 +259,9 @@ const Projects = () => {
                 key={project.id}
                 className={cn(
                   styles.compactCardBase,
-                  isInteractiveProject(project) ? styles.compactCardInteractive : styles.compactCardComingSoon,
+                  isInteractiveProject(project)
+                    ? styles.compactCardInteractive
+                    : styles.compactCardComingSoon,
                 )}
                 onClick={() => {
                   if (isInteractiveProject(project)) {
@@ -207,13 +271,23 @@ const Projects = () => {
                 role={isInteractiveProject(project) ? "button" : undefined}
                 tabIndex={isInteractiveProject(project) ? 0 : undefined}
                 onKeyDown={(event) => {
-                  if (isInteractiveProject(project) && (event.key === "Enter" || event.key === " ")) {
+                  if (
+                    isInteractiveProject(project) &&
+                    (event.key === "Enter" || event.key === " ")
+                  ) {
                     event.preventDefault();
                     setSelectedProject(project);
                   }
                 }}
               >
-                <p className={styles.compactEmoji}>{project.emoji}</p>
+                <div className={styles.compactPreview}>
+                  <img
+                    src={project.cardImage}
+                    alt={`Capa do projeto ${project.title}`}
+                    className={styles.compactPreviewImage}
+                  />
+                </div>
+
                 <h4 className={styles.compactTitle}>{project.title}</h4>
                 <p className={styles.compactDescription}>{project.description}</p>
 
@@ -225,7 +299,9 @@ const Projects = () => {
                   ))}
                 </div>
 
-                {isInteractiveProject(project) ? <ArrowUpRight className={styles.compactArrow} size={16} /> : null}
+                {isInteractiveProject(project) ? (
+                  <ArrowUpRight className={styles.compactArrow} size={16} />
+                ) : null}
               </article>
             ))}
           </div>
@@ -244,18 +320,16 @@ const Projects = () => {
               <>
                 <DialogHeader>
                   <p className={styles.dialogCategory}>{selectedProject.category}</p>
-                  <DialogTitle className={styles.dialogTitle}>{selectedProject.title}</DialogTitle>
-                  <DialogDescription className={styles.dialogDescription}>{selectedProject.summary}</DialogDescription>
+                  <DialogTitle className={styles.dialogTitle}>
+                    {selectedProject.title}
+                  </DialogTitle>
+                  <DialogDescription className={styles.dialogDescription}>
+                    {selectedProject.summary}
+                  </DialogDescription>
                 </DialogHeader>
 
                 <div className={styles.dialogBody}>
-                  <div className={styles.dialogPreview}>
-                    {selectedProject.image ? (
-                      <img src={selectedProject.image} alt={selectedProject.title} className={styles.dialogPreviewImage} />
-                    ) : (
-                      <div className={styles.dialogPreviewEmoji}>{selectedProject.emoji}</div>
-                    )}
-                  </div>
+                  <div className={styles.dialogPreview}>{renderModalMedia(selectedProject)}</div>
 
                   <div className={styles.dialogMetricsGrid}>
                     {selectedProject.metrics.map((metric) => (

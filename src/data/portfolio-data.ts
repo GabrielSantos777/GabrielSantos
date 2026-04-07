@@ -53,6 +53,12 @@ export type ProjectMetric = {
   label: string;
 };
 
+export type ProjectMedia = {
+  type: "image" | "video";
+  src: string;
+  poster?: string;
+};
+
 export type PortfolioProject = {
   id: string;
   title: string;
@@ -69,7 +75,8 @@ export type PortfolioProject = {
   isComingSoon?: boolean;
   githubUrl?: string;
   demoUrl?: string;
-  image?: string;
+  cardImage: string;
+  modalMedia?: ProjectMedia;
 };
 
 export type ProjectFilter = {
@@ -159,17 +166,24 @@ export const skillCategories: SkillCategory[] = [
     label: "Frontend",
     skills: [
       {
-        iconImage: "/skills/react.svg",
-        name: "React",
+        iconImage: "/skills/html.svg",
+        name: "HTML5",
         level: "Avançado",
-        progress: 90,
+        progress: 92,
         tag: "Frontend",
       },
       {
-        iconImage: "/skills/html-css.svg",
-        name: "HTML5 & CSS3",
+        iconImage: "/skills/css.svg",
+        name: "CSS3",
         level: "Avançado",
         progress: 92,
+        tag: "Frontend",
+      },
+      {
+        iconImage: "/skills/tailwind.svg",
+        name: "Tailwind CSS",
+        level: "Avançado",
+        progress: 85,
         tag: "Frontend",
       },
       {
@@ -180,17 +194,24 @@ export const skillCategories: SkillCategory[] = [
         tag: "Frontend",
       },
       {
+        iconImage: "/skills/react.svg",
+        name: "React",
+        level: "Avançado",
+        progress: 90,
+        tag: "Frontend",
+      },
+      {
         iconImage: "/skills/typescript.svg",
-        name: "TypeScript",
+        name: "Next.js",
         level: "Intermediário",
         progress: 70,
         tag: "Frontend",
       },
       {
-        iconImage: "/skills/tailwind.svg",
-        name: "Tailwind CSS",
-        level: "Avançado",
-        progress: 85,
+        iconImage: "/skills/typescript.svg",
+        name: "TypeScript",
+        level: "Intermediário",
+        progress: 70,
         tag: "Frontend",
       },
       {
@@ -217,14 +238,35 @@ export const skillCategories: SkillCategory[] = [
         iconImage: "/skills/php.svg",
         name: "PHP",
         level: "Avançado",
-        progress: 80,
+        progress: 85,
         tag: "Backend",
       },
       {
         iconImage: "/skills/nodejs.svg",
         name: "Node.js",
         level: "Intermediário",
-        progress: 72,
+        progress: 50,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/nodejs.svg",
+        name: "GO",
+        level: "Iniciante",
+        progress: 25,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/docker.svg",
+        name: "Docker",
+        level: "Intermediário",
+        progress: 55,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/sql.svg",
+        name: "NestJS",
+        level: "Intermediário",
+        progress: 50,
         tag: "Backend",
       },
       {
@@ -237,15 +279,36 @@ export const skillCategories: SkillCategory[] = [
       {
         iconImage: "/skills/postgresql.svg",
         name: "PostgreSQL",
-        level: "Intermediário",
-        progress: 75,
+        level: "Avançado",
+        progress: 85,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/postgresql.svg",
+        name: "MySQL",
+        level: "Avançado",
+        progress: 85,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/postgresql.svg",
+        name: "Prisma",
+        level: "Avançado",
+        progress: 85,
+        tag: "Backend",
+      },
+      {
+        iconImage: "/skills/postgresql.svg",
+        name: "Firebase",
+        level: "Avançado",
+        progress: 85,
         tag: "Backend",
       },
       {
         iconImage: "/skills/supabase.svg",
         name: "Supabase",
         level: "Intermediário",
-        progress: 70,
+        progress: 85,
         tag: "Backend",
       },
     ],
@@ -256,23 +319,37 @@ export const skillCategories: SkillCategory[] = [
     skills: [
       {
         iconImage: "/skills/power-bi.svg",
+        name: "Python",
+        level: "Avançado",
+        progress: 88,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/power-bi.svg",
+        name: "SQL",
+        level: "Avançado",
+        progress: 88,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/power-bi.svg",
+        name: "DAX",
+        level: "Avançado",
+        progress: 88,
+        tag: "Data Analysis",
+      },
+      {
+        iconImage: "/skills/power-bi.svg",
         name: "Power BI",
         level: "Avançado",
         progress: 88,
         tag: "Data Analysis",
       },
       {
-        iconImage: "/skills/pandas.svg",
-        name: "Pandas",
+        iconImage: "/skills/tableau.svg",
+        name: "Tableau",
         level: "Avançado",
-        progress: 85,
-        tag: "Data Analysis",
-      },
-      {
-        iconImage: "/skills/numpy.svg",
-        name: "NumPy",
-        level: "Intermediário",
-        progress: 78,
+        progress: 88,
         tag: "Data Analysis",
       },
       {
@@ -290,11 +367,11 @@ export const skillCategories: SkillCategory[] = [
         tag: "Data Apps",
       },
       {
-        iconImage: "/skills/plotly.svg",
-        name: "Plotly",
+        iconImage: "/skills/machinelearning.svg",
+        name: "Machine Learning",
         level: "Intermediário",
         progress: 75,
-        tag: "Visualization",
+        tag: "Data Science",
       },
     ],
   },
@@ -307,7 +384,7 @@ export const skillCategories: SkillCategory[] = [
         name: "Git & GitHub",
         level: "Avançado",
         progress: 90,
-        tag: "DevOps",
+        tag: "Tooling",
       },
       {
         iconImage: "/skills/n8n.svg",
@@ -315,13 +392,6 @@ export const skillCategories: SkillCategory[] = [
         level: "Intermediário",
         progress: 78,
         tag: "Automation",
-      },
-      {
-        iconImage: "/skills/docker.svg",
-        name: "Docker",
-        level: "Básico-Intermediário",
-        progress: 55,
-        tag: "DevOps",
       },
       {
         iconImage: "/skills/ocr-nlp.svg",
@@ -361,7 +431,7 @@ export const projects: PortfolioProject[] = [
     title: "Planix",
     subtitle: "// plataforma de gestão financeira",
     category: "Full Stack - Produto Web",
-    emoji: "💰",
+    emoji: "",
     description:
       "Plataforma completa de gestão financeira pessoal e empresarial. Controle de despesas, relatórios automáticos, OCR de recibos e automação com n8n.",
     summary:
@@ -397,14 +467,15 @@ export const projects: PortfolioProject[] = [
     isFeatured: true,
     githubUrl: "https://github.com/GabrielSantos777/planix",
     demoUrl: "https://planix.space/landing",
-    image: planixImage,
+    cardImage: planixImage,
+    modalMedia: { type: "image", src: "/project-media/planix-detail.svg" },
   },
   {
     id: "olist",
     title: "Olist E-commerce Analytics",
     subtitle: "// análise de 100k+ pedidos",
     category: "Data Analytics - Business Intelligence",
-    emoji: "📊",
+    emoji: "",
     description:
       "Business Intelligence aplicado ao dataset de 100k+ pedidos com análise preditiva, segmentação RFM e dashboard executivo no Power BI.",
     summary:
@@ -438,14 +509,15 @@ export const projects: PortfolioProject[] = [
     isFeatured: true,
     githubUrl:
       "https://github.com/GabrielSantos777/Analise_dados_ecommerce_Olist",
-    image: olistImage,
+    cardImage: olistImage,
+    modalMedia: { type: "image", src: "/project-media/olist-detail.svg" },
   },
   {
     id: "saas",
     title: "SaaS Pulse",
     subtitle: "// inteligência de negócio para SaaS",
     category: "Data & BI - Python",
-    emoji: "📈",
+    emoji: "",
     description:
       "BI para monitoramento de MRR, churn e métricas de saúde financeira para plataformas SaaS.",
     summary:
@@ -467,14 +539,15 @@ export const projects: PortfolioProject[] = [
     isFeatured: false,
     githubUrl:
       "https://github.com/GabrielSantos777/Pulse_Monitor_de_Metricas_Criticas",
-    image: saasPulseImage,
+    cardImage: saasPulseImage,
+    modalMedia: { type: "image", src: "/project-media/saas-detail.svg" },
   },
   {
     id: "pipeline",
     title: "Pipeline Financeiro",
     subtitle: "// engenharia de dados em produção",
     category: "Data Engineering - Full Stack",
-    emoji: "🔄",
+    emoji: "",
     description:
       "Engenharia de dados para coleta e monitoramento automatizado de séries temporais USD/BRL.",
     summary:
@@ -496,14 +569,15 @@ export const projects: PortfolioProject[] = [
     isFeatured: false,
     githubUrl:
       "https://github.com/GabrielSantos777/FluxGuard_financeira_pipeline",
-    image: pipelineImage,
+    cardImage: pipelineImage,
+    modalMedia: { type: "image", src: "/project-media/pipeline-detail.svg" },
   },
   {
     id: "opinion",
     title: "OpiniON",
     subtitle: "// análise de sentimentos com NLP",
     category: "NLP - Data Science",
-    emoji: "💬",
+    emoji: "",
     description:
       "Análise e visualização de sentimentos de comentários de produtos usando NLP.",
     summary:
@@ -524,14 +598,15 @@ export const projects: PortfolioProject[] = [
     filters: ["data"],
     isFeatured: false,
     githubUrl: "https://github.com/GabrielSantos777/OpiniON",
-    image: opinionImage,
+    cardImage: opinionImage,
+    modalMedia: { type: "image", src: "/project-media/opinion-detail.svg" },
   },
   {
     id: "skysync",
     title: "SkySync",
     subtitle: "// clima em tempo real",
     category: "Full Stack - Web App",
-    emoji: "🌤️",
+    emoji: "",
     description:
       "Aplicação web que exibe condições climáticas de cidades no mundo inteiro em tempo real.",
     summary:
@@ -552,14 +627,15 @@ export const projects: PortfolioProject[] = [
     filters: ["fullstack"],
     isFeatured: false,
     githubUrl: "https://github.com/GabrielSantos777/SkySync",
-    image: skysyncImage,
+    cardImage: skysyncImage,
+    modalMedia: { type: "image", src: "/project-media/skysync-detail.svg" },
   },
   {
     id: "rag-assistant",
     title: "RAG Assistant",
     subtitle: "// em breve",
     category: "AI Engineering",
-    emoji: "🤖",
+    emoji: "",
     description:
       "Assistente inteligente com LangChain, embeddings e base de conhecimento personalizada.",
     summary:
@@ -570,6 +646,8 @@ export const projects: PortfolioProject[] = [
     filters: ["automation", "fullstack"],
     isFeatured: false,
     isComingSoon: true,
+    cardImage: "/project-media/rag-cover.svg",
+    modalMedia: { type: "image", src: "/project-media/rag-detail.svg" },
   },
   {
     id: "etl-pipeline",
@@ -587,6 +665,8 @@ export const projects: PortfolioProject[] = [
     filters: ["data", "automation"],
     isFeatured: false,
     isComingSoon: true,
+    cardImage: "/project-media/etl-cover.svg",
+    modalMedia: { type: "image", src: "/project-media/etl-detail.svg" },
   },
 ];
 
