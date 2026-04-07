@@ -21,7 +21,10 @@ const Footer = () => {
             &lt;Gabriel <span className={styles.logoAccent}>Santos</span> /&gt;
           </p>
           <p className={styles.subtitle}>
-            Feito com foco em performance e experiência - {currentYear}
+            &copy; Todos os direitos reservados. {currentYear}
+          </p>
+          <p className={styles.subtitle}>
+            Feito com muito café por Gabriel Santos em {currentYear}
           </p>
         </div>
 

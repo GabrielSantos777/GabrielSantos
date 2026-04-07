@@ -178,7 +178,7 @@ const Hero = () => {
             })}
           </div>
 
-          <div ref={statsRef} className={styles.statsGrid}>
+          {/* <div ref={statsRef} className={styles.statsGrid}>
             {heroStats.map((statItem) => (
               <div key={statItem.label} className={styles.statCard}>
                 <CountUpValue
@@ -189,7 +189,7 @@ const Hero = () => {
                 <p className={styles.statLabel}>{statItem.label}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
 
         <div className={styles.avatarWrapper}>
