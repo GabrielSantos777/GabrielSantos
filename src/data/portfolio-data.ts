@@ -551,7 +551,7 @@ export const projects: PortfolioProject[] = [
       "Docker Compose",
     ],
     filters: ["data"],
-    isFeatured: true,
+    isFeatured: false,
     githubUrl: "https://github.com/GabrielSantos777/logistic_analise_vendas",
     cardImage: logisticImage,
     modalMedia: {
