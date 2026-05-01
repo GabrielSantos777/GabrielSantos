@@ -2,6 +2,7 @@ import avatarImage from "@/assets/avatar_me.png";
 import cvFile from "@/assets/Curriculo_Gabriel_Erick_Santos.pdf";
 import planixImage from "@/assets/planix.png";
 import olistImage from "@/assets/dashboard_olist.jpeg";
+import logisticImage from "@/assets/logistic.png";
 import saasPulseImage from "@/assets/saasPulse.jpg";
 import pipelineImage from "@/assets/finance_dashboard.png";
 import opinionImage from "@/assets/opinion.jpg";
@@ -511,6 +512,52 @@ export const projects: PortfolioProject[] = [
       "https://github.com/GabrielSantos777/Analise_dados_ecommerce_Olist",
     cardImage: olistImage,
     modalMedia: { type: "image", src: "/project-media/olist-detail.svg" },
+  },
+  {
+    id: "logistic-analise-vendas",
+    title: "Painel de Analise de Vendas",
+    subtitle: "// dashboard full-stack com filtros dinamicos",
+    category: "Data Analytics - Business Intelligence",
+    emoji: "",
+    description:
+      "Dashboard analitico full-stack com React + FastAPI para explorar vendas, clientes, produtos e performance por pais em um dataset historico.",
+    summary:
+      "Projeto de BI aplicado a dados de vendas, com API analitica em FastAPI, transformacoes em pandas e visualizacoes interativas no frontend.",
+    metrics: [
+      { value: "2.823", label: "Registros processados" },
+      { value: "US$10.03M", label: "Receita analisada" },
+      { value: "307", label: "Pedidos analisados" },
+    ],
+    features: [
+      "Pipeline de limpeza e tipagem com pandas (datas e tratamento de valores ausentes).",
+      "API FastAPI com endpoints de KPIs, receita mensal, categorias, top produtos, top clientes e vendas por pais.",
+      "Filtros globais por periodo, categoria e pais aplicados em todos os widgets.",
+      "KPIs principais: receita total, total de pedidos, ticket medio e clientes unicos.",
+      "Visualizacoes interativas com Recharts para analise temporal e comparativa.",
+      "Carregamento otimizado com Promise.all no frontend e cache do dataset com lru_cache no backend.",
+      "Layout responsivo com estados de loading (skeleton) e tratamento de erro amigavel.",
+      "Ambiente containerizado com Docker e Docker Compose para execucao local.",
+    ],
+    tech: [
+      "React 19",
+      "Vite",
+      "JavaScript (ESM)",
+      "Axios",
+      "Recharts",
+      "FastAPI",
+      "Python",
+      "pandas",
+      "Docker",
+      "Docker Compose",
+    ],
+    filters: ["data"],
+    isFeatured: true,
+    githubUrl: "https://github.com/GabrielSantos777/logistic_analise_vendas",
+    cardImage: logisticImage,
+    modalMedia: {
+      type: "video",
+      src: "/public/project-media/logisticVideo.mp4",
+    },
   },
   {
     id: "saas",
